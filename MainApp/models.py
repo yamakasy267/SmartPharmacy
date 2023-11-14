@@ -30,7 +30,7 @@ class Users(models.Model):
     password = models.CharField(max_length=10000)
     email = models.EmailField(max_length=1000)
     date_of_birth = models.DateField()
-    role = models.ForeignKey(Roles, on_delete=models.PROTECT, default=Roles.objects.get(name='User').pk)
+    role = models.ForeignKey(Roles, on_delete=models.PROTECT)
 
 
 class Comments(models.Model):
