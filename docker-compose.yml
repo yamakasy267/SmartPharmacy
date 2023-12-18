@@ -6,23 +6,23 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: academy
-      POSTGRES_USER: academy
-      POSTGRES_DB: academy
+      POSTGRES_PASSWORD: smart
+      POSTGRES_USER: smart
+      POSTGRES_DB: smart
 
-  app:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    volumes:
-      - '.:/home/web/app'
-    ports:
-      - 8000:8000
-    env_file:
-      - .env.dev
-    links:
-      - pg
-    depends_on:
-      - pg
-    entrypoint: ./bin/dockerize -wait tcp://pg:5432 -timeout 60s
-    command: python InternAcademy/manage.py runserver 0.0.0.0:8000
+#  app:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#    volumes:
+#      - '.:/home/web/app'
+#    ports:
+#      - 8000:8000
+#    env_file:
+#      - .env.dev
+#    links:
+#      - pg
+#    depends_on:
+#      - pg
+#    entrypoint: ./bin/dockerize -wait tcp://pg:5432 -timeout 60s
+#    command: python InternAcademy/manage.py runserver 0.0.0.0:8000

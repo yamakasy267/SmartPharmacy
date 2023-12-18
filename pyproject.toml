@@ -12,6 +12,9 @@ django-cors-headers = "^4.3.0"
 djangorestframework = "^3.14.0"
 djangorestframework-jwt = "^1.11.0"
 psycopg2 = "^2.9.9"
+beautifulsoup4 = "^4.12.2"
+lxml = "^4.9.3"
+selenium = "^4.16.0"
 
 
 [build-system]
