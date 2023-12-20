@@ -12,40 +12,54 @@ from .models import ActiveIngredients, Category, Medicines
 
 def Scrap():
     base_url = 'https://apteki.medsi.ru/'
-    pr = []
+    active = []
+    url = f'https://apteki.medsi.ru/mnn/'
+    html_text = requests.get(url).text
+    soup = BeautifulSoup(html_text, 'lxml')
+    ad = soup.find_all('a', class_='drug-list__link')
+    for i in ad:
+        active.append(ActiveIngredients(name=i.get('title')))
+    ActiveIngredients.objects.bulk_create(active)
     url = 'https://apteki.medsi.ru/health/lekarstva_i_bad/'
-    #url = f'https://apteki.medsi.ru/mnn/'
+
     html_text = requests.get(url).text
     soup = BeautifulSoup(html_text, 'lxml')
     ad = soup.find_all('a', class_='catalog-filter__list-link')
     for i in ad:
-        category = Category.objects.create(name=i.get('title'))
-        first_page = requests.get(base_url+i.get('href')).text
+        category, created = Category.objects.get_or_create(name=i.get('title'))
+        if not created:
+            continue
+        first_page = requests.get(base_url + i.get('href')).text
         first_pages = BeautifulSoup(first_page, 'lxml')
         product = first_pages.find_all('a', class_='product-list-item__title-link')
-
         for j in product:
-            prod = requests.get(base_url + j.get('href')).text
-            prod = BeautifulSoup(prod, 'lxml')
-            pr.append(Medicines(name=prod.find('h1', class_='product-title').text,
-                                category=category,
-                                producer=prod.find('span', class_='product-prop').text,
-                                total_amount=prod.find('span', class_='product-price mr-12').text,
-                                ))
+            prod = requests.get(base_url + j.get('href'))
+            if prod.status_code != 200:
+                continue
+            prod = BeautifulSoup(prod.text, 'lxml')
+            amount = prod.find('span', class_='product-price mr-12').text.split()[:-1]
+            amount = "".join(amount)
 
-        count = 2
-        while True:
-            respon = requests.get(base_url+i.get('href')+f'?PAGEN_1={count}').text
-            if respon == first_page:
-                break
-            resp = BeautifulSoup(respon, 'lxml')
-            product = resp.find_all('a', class_='product-list-item__title-link')
+            ingredient = prod.find('a', class_='anchor')
+            producer = prod.find('span', class_='product-prop')
+            while producer and producer.find_next('span').text != "Производитель —":
+                producer = producer.find_next('span', class_='product-prop')
+            if producer:
+                producer = producer.contents[2]
 
-            for j in product:
-                prod = requests.get(base_url+j.get('href')).text
-                prod = BeautifulSoup(prod, 'lxml')
+            med = Medicines.objects.create(name=prod.find('h1', class_='product-title').text,
+                                           category=category,
+                                           producer=producer,
+                                           total_amount=int(amount),
+                                           release_form=prod.find('div', id='product-description').find('h3',
+                                                                                                        class_='h5').find_next(
+                                               'p').text,
+                                           quantity=1)
+            try:
+                active = ActiveIngredients.objects.get(name=ingredient.text).pk
+                med.active_element.set([active])
+            except Exception as e:
+                print("Not category")
 
-    # ad = soup.find_all('a', class_='drug-list__link')
-    # for i in ad:
-    #     active.append(ActiveIngredients(name=i.get('title')))
-    # ActiveIngredients.objects.bulk_create(active)
+
+

@@ -45,7 +45,7 @@ class Medicines(models.Model):
     active_element = models.ManyToManyField('MainApp.ActiveIngredients', related_name='active_element')
     producer = models.CharField(max_length=1000)
     total_amount = models.FloatField(max_length=100000)
-    release_form = models.IntegerField()
+    release_form = models.CharField(max_length=1000)
     quantity = models.IntegerField()
     comment = models.ManyToManyField('MainApp.Comments', related_name='comments')
 
