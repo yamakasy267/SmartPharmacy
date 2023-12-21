@@ -14,7 +14,7 @@ class RegistrationSerialization(serializers.ModelSerializer):
 
     def create(self, validated_data):
         check_email = Users.objects.filter(email=validated_data['email'])
-        if not check_email:
+        if check_email:
             raise Exception("this email already using")
         passw = validated_data.get('password')
         passw = make_password(passw)

@@ -25,5 +25,9 @@ class JWTAuthorization(authentication.BaseAuthentication):
 
 
 class IsAuth(IsAuthenticated):
+
     def has_permission(self, request, view):
-        return bool(request.user)
+        is_active=True
+        if request.user.pk == None:
+            is_active = False
+        return bool(request.user) and is_active

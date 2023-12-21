@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 
@@ -32,6 +34,9 @@ class Users(models.Model):
     date_of_birth = models.DateField()
     role = models.ForeignKey(Roles, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.name
+
 
 class Comments(models.Model):
     user_id = models.ForeignKey(Users, on_delete=models.PROTECT)
@@ -53,3 +58,12 @@ class Medicines(models.Model):
 class Views(models.Model):
     user_id = models.ForeignKey(Users, on_delete=models.PROTECT)
     medicine_id = models.ForeignKey(Medicines, on_delete=models.PROTECT)
+
+
+class Requests(models.Model):
+    request_id = models.BigAutoField(primary_key=True)
+    date = models.DateTimeField(default=datetime.datetime.now())
+    user = models.CharField(max_length=10000)
+    search_type = models.CharField()
+    response_code = models.IntegerField()
+    response_text = models.TextField(max_length=10000, blank=True, null=True)

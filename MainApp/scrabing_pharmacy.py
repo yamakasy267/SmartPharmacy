@@ -42,10 +42,12 @@ def Scrap():
 
             ingredient = prod.find('a', class_='anchor')
             producer = prod.find('span', class_='product-prop')
-            while producer and producer.find_next('span').text != "Производитель —":
+            while producer:
+                if producer.find_next('span').text == "Производитель —":
+                    producer = producer.find_next('span').text.contents[2]
+                    break
                 producer = producer.find_next('span', class_='product-prop')
-            if producer:
-                producer = producer.contents[2]
+
 
             med = Medicines.objects.create(name=prod.find('h1', class_='product-title').text,
                                            category=category,
