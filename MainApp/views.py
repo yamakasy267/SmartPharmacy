@@ -4,7 +4,7 @@ from .serializers import *
 from rest_framework.permissions import AllowAny
 import json
 from rest_framework.response import Response
-from .Auth import IsAuth, JWTAuthorization
+from .Auth import IsAuth, JWTAuthorization, IsAdmin
 from .scrabing_pharmacy import Scrap
 from django.db.models import F, Q
 from django.db.models.functions import JSONObject
@@ -196,3 +196,69 @@ class GetLogs(generics.ListAPIView):
         log = Requests.objects.filter(
             Q(date__gte=request.data.get('date_start') & Q(date__lte=request.data.get('date_finish')))).values()
         return Response(status=200, data={'log': log})
+
+
+class DeleteComment(generics.DestroyAPIView):
+    permission_classes = [IsAuth]
+    authentication_classes = [JWTAuthorization]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            coment = Comments.objects.get(pk=request.data.get('comment_id'), user_id=request.user)
+            med = Medicines.objects.get(comment=coment)
+            med.comment.remove(coment)
+            coment.delete()
+        except Exception as e:
+            print(e)
+            return Response(status=500)
+        return Response(status=200)
+
+
+class UpdateComment(generics.UpdateAPIView):
+    permission_classes = [IsAuth]
+    authentication_classes = [JWTAuthorization]
+
+    def put(self, request, *args, **kwargs):
+        try:
+            coment = Comments.objects.get(pk=request.data.get('comment_id'), user_id=request.user)
+            coment.text = request.data.get('comment_text')
+            coment.save()
+        except Exception as e:
+            print(e)
+            return Response(status=500)
+        return Response(status=200)
+
+
+class UpdateInfoUser(generics.UpdateAPIView):
+    permission_classes = [IsAuth]
+    authentication_classes = [JWTAuthorization]
+
+    def put(self, request, *args, **kwargs):
+        try:
+            user = Users.objects.get(pk=request.user.pk)
+            user.name = request.data.get('name')
+            user.password = make_password(request.data.get('password'))
+            user.date_of_birth = request.data.get('date_of_birth')
+        except Exception as e:
+            print(e)
+            return Response(status=500)
+        return Response(status=200)
+
+
+class DeleteUser(generics.DestroyAPIView):
+    permission_classes = [IsAdmin]
+    authentication_classes = [JWTAuthorization]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            user = Users.objects.get(pk=request.data.get('user_id'))
+            coment = Comments.objects.filter(user_id=user)
+            for i in coment:
+                med = Medicines.objects.get(comment=i)
+                med.comment.remove(i)
+            coment.delete()
+            user.delete()
+        except Exception as e:
+            print(e)
+            return Response(status=500)
+        return Response(status=200)

@@ -16,5 +16,6 @@ urlpatterns = [
     path('get_views/', GetView.as_view()),
     path('create_views/', CreateViews.as_view()),
     path('create_comment/', CreateComment.as_view()),
+    path('delete_comment/', DeleteComment.as_view()),
 
 ]
