@@ -195,7 +195,7 @@ class GetLogs(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         log = Requests.objects.filter(
-            Q(date__gte=request.GET.get('date_start') & Q(date__lte=request.GET.get('date_finish')))).values()
+            Q(date__gte=request.GET.get('date_start')) & Q(date__lte=request.GET.get('date_finish'))).values()
         return Response(status=200, data={'log': log})
 
 
