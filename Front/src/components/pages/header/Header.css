@@ -1,0 +1,13 @@
+.header__title {
+  color: var(--color-rich-green);
+  text-decoration: none;
+}
+
+.header__title h5 {
+  font-weight: bold;
+}
+
+.header__log-in-btn {
+  color: var(--color-rich-green);
+  text-transform: uppercase;
+}

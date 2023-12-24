@@ -24,7 +24,7 @@ class Registration(generics.CreateAPIView):
             return HttpResponse(status=500, content=f"Failed to register because {e}")
         return HttpResponse(status=200, )
 
-
+# authentication
 class Auntification(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = AuntificationSerialization
