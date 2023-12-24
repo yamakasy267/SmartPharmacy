@@ -16,6 +16,7 @@ class RegistrationSerialization(serializers.ModelSerializer):
         passw = validated_data.get('password')
         passw = make_password(passw)
         validated_data['password'] = passw
+        validated_data['role'] = Roles.objects.get(name='user')
         user = Users.objects.create(**validated_data)
         return user
 

@@ -26,11 +26,10 @@ SECRET_KEY = 'django-insecure-8ca169(8!uff)_ix1jf)g69*!lq#a8p66)3rpp78ur-go3kyeq
 DEBUG = True
 
 ALLOWED_HOSTS = []
-CORS_ALLOWED_ORIGINS = ['http://*']
-
+#CORS_ALLOWED_ORIGINS = ['http://*']
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,7 +83,7 @@ DATABASES = {
         'USER': os.environ['DATABASE_USER'],
         'PASSWORD': os.environ['DATABASE_PASSWORD'],
         'HOST': 'localhost',
-        'PORT': '5433'
+        'PORT': '5432'
     }
 }
 
