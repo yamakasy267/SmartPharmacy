@@ -46,7 +46,7 @@ class GetMedicine(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         if request.data.get('medicine_id'):
-            med = Medicines.objects.filter(pk=request.data['medicine_id']).annotate(
+            med = Medicines.objects.filter(pk=request.GET.get('medicine_id')).annotate(
                 comments=JSONBAgg(JSONObject(text='comment__text', user='comment__user_id__name'))).annotate(
                 element=ArrayAgg('active_element__name', distinct=True)).values('pk', 'name',
                                                                                 'category__name',
@@ -79,8 +79,9 @@ class GetMedicineForActiveElement(generics.ListAPIView):
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
+
         try:
-            medicine = Medicines.objects.filter(active_element__name__in=request.data['element']).annotate(
+            medicine = Medicines.objects.filter(active_element__name__in=request.GET.get('element')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -92,12 +93,12 @@ class GetMedicineForActiveElement(generics.ListAPIView):
 
 
 class GetMedicineForName(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
         try:
-            medicine = Medicines.objects.filter(name__icontains=request.data.get('medicine_name')).annotate(
+            medicine = Medicines.objects.filter(name__icontains=request.GET.get('medicine_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -114,7 +115,7 @@ class GetMedicineForCategory(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            medicine = Medicines.objects.filter(category__name=request.data.get('category_name')).annotate(
+            medicine = Medicines.objects.filter(category__name=request.GET.get('category_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -194,7 +195,7 @@ class GetLogs(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         log = Requests.objects.filter(
-            Q(date__gte=request.data.get('date_start') & Q(date__lte=request.data.get('date_finish')))).values()
+            Q(date__gte=request.GET.get('date_start') & Q(date__lte=request.GET.get('date_finish')))).values()
         return Response(status=200, data={'log': log})
 
 
