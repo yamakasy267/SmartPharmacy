@@ -45,7 +45,7 @@ class GetMedicine(generics.ListAPIView):
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
-        if request.data.get('medicine_id'):
+        if request.GET.get('medicine_id'):
             med = Medicines.objects.filter(pk=request.data['medicine_id']).annotate(
                 comments=JSONBAgg(JSONObject(text='comment__text', user='comment__user_id__name'))).annotate(
                 element=ArrayAgg('active_element__name', distinct=True)).values('pk', 'name',
@@ -59,7 +59,7 @@ class GetMedicine(generics.ListAPIView):
             med = Medicines.objects.all().annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
-        return Response(status=200, data={'mde': med})
+        return Response(status=200, data={'med': med})
 
 
 class TestScrap(generics.ListAPIView):
