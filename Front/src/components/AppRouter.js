@@ -9,14 +9,16 @@ import {
   SearchByAnalogue,
   SearchByName,
   SearchBySymptom,
-  SearchTypeBar
+  SearchTypeBar,
+  AdminPage
 } from "./utils";
 import {
   ANALOGUE_SEARCH_ROUTE, LOGIN_ROUTE,
   NAME_SEARCH_ROUTE,
   PERSONAL_ROUTE,
   PRODUCT_ROUTE, REGISTRATION_ROUTE,
-  SYMPTOM_SEARCH_ROUTE
+  SYMPTOM_SEARCH_ROUTE,
+  ADMIN_ROUTE
 } from "./utils/Consts";
 import Auth from "./pages/Auth";
 import {publicRoutes} from "../routes";
@@ -41,6 +43,7 @@ const AppRouter = observer(() => {
       {publicRoutes.map(({path, Component}) => (
         <Route path={path} element={<Component/>}/>
       ))}
+      <Route path={ADMIN_ROUTE} element={<AdminPage/>}/>
     </Routes>
   );
 });

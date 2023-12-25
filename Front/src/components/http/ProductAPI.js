@@ -1,4 +1,4 @@
-import  {$authHost, $host} from "./index";
+import  {$authHost, $host} from "./Index";
 
 
 export const getCategory = async (type) => {

@@ -12,3 +12,5 @@ export { default as SearchBySymptom } from "../pages/search/SearchBySymptom";
 export { default as SearchByAnalogue } from "../pages/search/SearchByAnalogue";
 export { default as SearchByName } from "../pages/search/SearchByName";
 
+export { default as AdminPage } from "../pages/admin/AdminPage";
+

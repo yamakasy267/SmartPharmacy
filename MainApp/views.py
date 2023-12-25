@@ -47,7 +47,7 @@ class GetMedicine(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get('medicine_id'):
-            med = Medicines.objects.filter(pk=request.data['medicine_id']).annotate(
+            med = Medicines.objects.filter(pk=request.GET['medicine_id']).annotate(
                 comments=JSONBAgg(JSONObject(text='comment__text', user='comment__user_id__name'))).annotate(
                 element=ArrayAgg('active_element__name', distinct=True)).values('pk', 'name',
                                                                                 'category__name',
