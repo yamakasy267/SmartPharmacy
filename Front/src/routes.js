@@ -6,7 +6,14 @@ import {
 } from "./components/utils/Consts";
 
 import Auth from "./components/pages/Auth";
-import {Personal, ProductPage, SearchByAnalogue, SearchBySymptom, SearchTypeBar} from "./components/utils";
+import {
+    Personal,
+    ProductPage,
+    SearchByAnalogue,
+    SearchByName,
+    SearchBySymptom,
+    SearchTypeBar
+} from "./components/utils";
 
 export const authRoutes = [
     // {
@@ -20,30 +27,30 @@ export const authRoutes = [
 ]
 
 export const publicRoutes = [
-    {
-        path: LOGIN_ROUTE,
-        Component: Auth
-    },
-    {
-        path: REGISTRATION_ROUTE,
-        Component: Auth
-    },
-    {
-        path: SEARCH_BAR_ROUTE,
-        Component: SearchTypeBar
-    },
-    {
-        path: SYMPTOM_SEARCH_ROUTE,
-        Component: SearchBySymptom
-    },
-    {
-        path: ANALOGUE_SEARCH_ROUTE,
-        Component: SearchByAnalogue
-    },
-    {
-        path: NAME_SEARCH_ROUTE,
-        Component: SearchByAnalogue
-    },
+    // {
+    //     path: LOGIN_ROUTE,
+    //     Component: Auth
+    // },
+    // {
+    //     path: REGISTRATION_ROUTE,
+    //     Component: Auth
+    // },
+    // {
+    //     path: SEARCH_BAR_ROUTE,
+    //     Component: SearchTypeBar
+    // },
+    // {
+    //     path: SYMPTOM_SEARCH_ROUTE,
+    //     Component: SearchBySymptom
+    // },
+    // {
+    //     path: ANALOGUE_SEARCH_ROUTE,
+    //     Component: SearchByAnalogue
+    // },
+    // {
+    //     path: NAME_SEARCH_ROUTE,
+    //     Component: SearchByName
+    // },
     {
         path: PRODUCT_ROUTE + '/:id',
         Component: ProductPage

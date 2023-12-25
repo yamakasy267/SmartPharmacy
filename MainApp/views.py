@@ -42,7 +42,7 @@ class Auntification(generics.CreateAPIView):
 
 
 class GetMedicine(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
