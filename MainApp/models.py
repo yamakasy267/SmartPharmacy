@@ -67,3 +67,14 @@ class Requests(models.Model):
     search_type = models.CharField()
     response_code = models.IntegerField()
     response_text = models.TextField(max_length=10000, blank=True, null=True)
+
+
+class Symptoms(models.Model):
+    symptoms_id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=1000)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+
+
+class ChainQueue(models.Model):
+    symptoms = models.CharField(max_length=1000)
+    moderator = models.ForeignKey(Users, on_delete=models.CASCADE)

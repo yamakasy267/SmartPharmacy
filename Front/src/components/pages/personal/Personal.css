@@ -1,0 +1,25 @@
+.personal__info {
+  flex-shrink: 0;
+  background-color: var(--color-white);
+  border-radius: 10px;
+  border: 1px solid var(--color-pale-green);
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+}
+
+.personal__info_birthdate {
+  color: #67727E;
+  border-bottom: 1px solid #67727E;
+}
+
+.personal__info_delete {
+  color: #EFAC98;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.personal__info_change-btn-icon {
+  font-size: 14px;
+}

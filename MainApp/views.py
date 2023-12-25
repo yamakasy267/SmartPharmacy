@@ -25,6 +25,7 @@ class Registration(generics.CreateAPIView):
         return HttpResponse(status=200, )
 
 
+# authentication
 class Auntification(generics.CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = AuntificationSerialization
@@ -75,12 +76,13 @@ class TestScrap(generics.ListAPIView):
 
 
 class GetMedicineForActiveElement(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
+
         try:
-            medicine = Medicines.objects.filter(active_element__name__in=request.data['element']).annotate(
+            medicine = Medicines.objects.filter(active_element__name__in=request.GET.get('element')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -92,12 +94,12 @@ class GetMedicineForActiveElement(generics.ListAPIView):
 
 
 class GetMedicineForName(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
         try:
-            medicine = Medicines.objects.filter(name__icontains=request.data.get('medicine_name')).annotate(
+            medicine = Medicines.objects.filter(name__icontains=request.GET.get('medicine_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -109,12 +111,12 @@ class GetMedicineForName(generics.ListAPIView):
 
 
 class GetMedicineForCategory(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
         try:
-            medicine = Medicines.objects.filter(category__name=request.data.get('category_name')).annotate(
+            medicine = Medicines.objects.filter(category__name=request.GET.get('category_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity')
         except Exception as e:
@@ -126,7 +128,7 @@ class GetMedicineForCategory(generics.ListAPIView):
 
 
 class GetCategory(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -139,7 +141,7 @@ class GetCategory(generics.ListAPIView):
 
 
 class GetActiveElement(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -194,7 +196,7 @@ class GetLogs(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         log = Requests.objects.filter(
-            Q(date__gte=request.data.get('date_start') & Q(date__lte=request.data.get('date_finish')))).values()
+            Q(date__gte=request.GET.get('date_start')) & Q(date__lte=request.GET.get('date_finish'))).values()
         return Response(status=200, data={'log': log})
 
 
@@ -261,4 +263,61 @@ class DeleteUser(generics.DestroyAPIView):
         except Exception as e:
             print(e)
             return Response(status=500)
+        return Response(status=200)
+
+
+class GetMedicineForSymptoms(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthorization]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            category = Symptoms.objects.get(name=request.GET.get('symptoms_name'))
+        except Exception as e:
+            if request.GET.get('symptoms_name'):
+                moderator = Users.objects.filter(role__name='moderator').values('pk')
+                last_moderator = ChainQueue.objects.last().pk
+                if len(moderator) > 1:
+                    count = 0
+                    for i in moderator:
+                        if i['pk'] == last_moderator:
+                            count += 1
+                            if count > len(moderator):
+                                count = 0
+                            last_moderator = moderator[count].pk
+                            break
+                        count += 1
+                ChainQueue.objects.create(symptoms=request.GET.get('symptoms_name'), moderator_id=last_moderator)
+                return Response(status=501, data={
+                    'error': 'Пока мы не знаем рецепта от вашей болезни, но в скоре наши врачи с этим справяться'})
+            else:
+                print(e)
+                return Response(status=500)
+        medicine = Medicines.objects.filter(category=category).annotate(
+            element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element',
+                                                             'producer',
+                                                             'total_amount', 'release_form', 'quantity')
+        return Response(status=200, data={'medicine': medicine})
+
+
+class GetChainQueue(generics.ListAPIView):
+    permission_classes = [IsAdmin]
+    authentication_classes = [JWTAuthorization]
+
+    def get(self, request, *args, **kwargs):
+        chain = ChainQueue.objects.filter(moderator=request.user).values()
+        return Response(status=200, data={'chain': chain})
+
+
+class SetChain(generics.CreateAPIView):
+    permission_classes = [IsAdmin]
+    authentication_classes = [JWTAuthorization]
+
+    def post(self, request, *args, **kwargs):
+        symptoms = []
+        for i in request.data.get('chain'):
+            symptoms.append(Symptoms(symptoms=i['symptoms'], category_id=i['category']))
+            chain = ChainQueue.objects.get(pk=i['id'])
+            chain.delete()
+        Symptoms.objects.bulk_create(symptoms)
         return Response(status=200)

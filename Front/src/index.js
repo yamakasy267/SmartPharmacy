@@ -1,23 +1,23 @@
-import React from 'react';
+import React, {createContext} from 'react';
+import App from './App';
 import ReactDOM from 'react-dom/client';
+import UserStore from "./components/store/UserStore";
+import reportWebVitals from './reportWebVitals';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './index.css';
-
-import Header from './Header/Header';
-import Search from './Search/Search';
-import reportWebVitals from './reportWebVitals';
-
+export const Context = createContext(null)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
-    <Header>
-    </Header>
-    <Search>
-    </Search>
-  </React.StrictMode>
+    <Context.Provider value={{
+        user: new UserStore(),
+        // deviceStore: new DeviceStore(),
+    }}>
+        <App />
+    </Context.Provider>,
 );
 
 reportWebVitals();
