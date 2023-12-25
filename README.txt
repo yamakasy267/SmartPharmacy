@@ -28,3 +28,6 @@ set DATABASE_USER="postgres"
 Миграция:
 python -m venv .venv
 python manage.py migrate
+
+Для отчета:
+npm i @grapecity/activereports-react
