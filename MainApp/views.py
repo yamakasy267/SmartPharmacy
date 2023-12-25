@@ -41,7 +41,7 @@ class Auntification(generics.CreateAPIView):
 
 
 class GetMedicine(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -75,7 +75,7 @@ class TestScrap(generics.ListAPIView):
 
 
 class GetMedicineForActiveElement(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -110,7 +110,7 @@ class GetMedicineForName(generics.ListAPIView):
 
 
 class GetMedicineForCategory(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -127,7 +127,7 @@ class GetMedicineForCategory(generics.ListAPIView):
 
 
 class GetCategory(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -140,7 +140,7 @@ class GetCategory(generics.ListAPIView):
 
 
 class GetActiveElement(generics.ListAPIView):
-    permission_classes = [AllowAny, IsAuth]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):

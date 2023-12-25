@@ -1,5 +1,6 @@
 import Symptom from "./Symptom";
 import ProductItem from "./ProductItem";
+import {getCategory, getMedicineByName} from "../../http/ProductAPI";
 
 function SearchByAnalogue() {
   return (

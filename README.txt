@@ -5,7 +5,8 @@ python 3.10.11, postgres, pgadmin
 python -m pip install Django
 pip install django-cors-headers
 pip install djangorestframework-jwt
-
+pip install BeautifulSoup4
+pip install pandas
 
 Далее необходимые к установке пакеты находятся в package.json.
 
