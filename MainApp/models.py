@@ -41,6 +41,7 @@ class Users(models.Model):
 class Comments(models.Model):
     user_id = models.ForeignKey(Users, on_delete=models.PROTECT)
     text = models.TextField(max_length=10000)
+    date = models.DateTimeField(default=datetime.datetime.now())
 
 
 class Medicines(models.Model):
@@ -53,6 +54,7 @@ class Medicines(models.Model):
     release_form = models.CharField(max_length=1000)
     quantity = models.IntegerField()
     comment = models.ManyToManyField('MainApp.Comments', related_name='comments')
+    image = models.URLField(null=True, blank=True)
 
 
 class Views(models.Model):

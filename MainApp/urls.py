@@ -13,10 +13,10 @@ urlpatterns = [
     path('get_medicine_for_category/', GetMedicineForCategory.as_view()),
     path('get_category/', GetCategory.as_view()),
     path('get_active_element/', GetActiveElement.as_view()),
-    path('get_views/', GetView.as_view()),
+    path('get_favorites/', GetFavorites.as_view()),
     path('create_views/', CreateViews.as_view()),
     path('create_comment/', CreateComment.as_view()),
     path('delete_comment/', DeleteComment.as_view()),
     path('get_logs/', GetLogs.as_view()),
-
+    path('get_user_info/', GetUserInfo.as_view()),
 ]

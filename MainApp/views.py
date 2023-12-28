@@ -21,8 +21,8 @@ class Registration(generics.CreateAPIView):
         try:
             serializer.save()
         except Exception as e:
-            return HttpResponse(status=500, content=f"Failed to register because {e}")
-        return HttpResponse(status=200, )
+            return Response(status=500, data={'error': f"Failed to register because {e}"})
+        return Response(status=200)
 
 
 # authentication
@@ -37,8 +37,8 @@ class Auntification(generics.CreateAPIView):
         try:
             token = serializer.createToken(validated_data)
         except Exception as e:
-            return HttpResponse(status=500, content=f"Failed authorization because {e}")
-        return HttpResponse(status=200, content=json.dumps({"token": f"Token {token}"}))
+            return Response(status=500, data={'error': e})
+        return Response(status=200, data={"token": f"Token {token}"})
 
 
 class GetMedicine(generics.ListAPIView):
@@ -153,7 +153,7 @@ class GetActiveElement(generics.ListAPIView):
         return Response(status=200, data={'element': element})
 
 
-class GetView(generics.ListAPIView):
+class GetFavorites(generics.ListAPIView):
     permission_classes = [AllowAny]
     authentication_classes = [JWTAuthorization]
 
@@ -321,3 +321,16 @@ class SetChain(generics.CreateAPIView):
             chain.delete()
         Symptoms.objects.bulk_create(symptoms)
         return Response(status=200)
+
+
+class GetUserInfo(generics.ListAPIView):
+    permission_classes = [IsAuth]
+    authentication_classes = [JWTAuthorization]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = Users.objects.filter(pk=request.user.pk).values('pk', 'name', 'email', 'date_of_birth', 'role__name')[0]
+        except Exception as e:
+            print(e)
+            return Response(status=500)
+        return Response(status=200, data={'user': user})
