@@ -154,7 +154,7 @@ class GetActiveElement(generics.ListAPIView):
 
 
 class GetFavorites(generics.ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuth]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
@@ -165,7 +165,7 @@ class GetFavorites(generics.ListAPIView):
         return Response(status=200, data={'views': views})
 
 
-class CreateViews(generics.CreateAPIView):
+class CreateFavorites(generics.CreateAPIView):
     permission_classes = [IsAuth]
     authentication_classes = [JWTAuthorization]
 
@@ -191,7 +191,7 @@ class CreateComment(generics.CreateAPIView):
 
 
 class GetLogs(generics.ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdmin]
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):

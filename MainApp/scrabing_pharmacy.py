@@ -26,8 +26,8 @@ def Scrap():
     ad = soup.find_all('a', class_='catalog-filter__list-link')
     for i in ad:
         category, created = Category.objects.get_or_create(name=i.get('title'))
-        if not created:
-            continue
+        # if not created:
+        #     continue
         first_page = requests.get(base_url + i.get('href')).text
         first_pages = BeautifulSoup(first_page, 'lxml')
         product = first_pages.find_all('a', class_='product-list-item__title-link')
@@ -38,13 +38,13 @@ def Scrap():
             prod = BeautifulSoup(prod.text, 'lxml')
             amount = prod.find('span', class_='product-price mr-12').text.split()[:-1]
             amount = "".join(amount)
-            image = prod.find('div', class_='product-image-slider-item').find_next('a').href
+            image = prod.find('div', class_='product-image-slider-item').find_next('a').get('href')
             image = base_url + image
             ingredient = prod.find('a', class_='anchor')
             producer = prod.find('span', class_='product-prop')
             while producer:
                 if producer.find_next('span').text == "Производитель —":
-                    producer = producer.find_next('span').text.contents[2]
+                    producer = producer.contents[2].strip()
                     break
                 producer = producer.find_next('span', class_='product-prop')
 
