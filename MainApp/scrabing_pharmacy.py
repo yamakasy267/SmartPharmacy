@@ -11,14 +11,14 @@ from .models import ActiveIngredients, Category, Medicines
 
 def Scrap():
     base_url = 'https://apteki.medsi.ru/'
-    active = []
     url = f'https://apteki.medsi.ru/mnn/'
     html_text = requests.get(url).text
     soup = BeautifulSoup(html_text, 'lxml')
     ad = soup.find_all('a', class_='drug-list__link')
     for i in ad:
-        active.append(ActiveIngredients(name=i.get('title')))
-    ActiveIngredients.objects.bulk_create(active)
+        mudl = i.get('title').split(' + ')
+        for j in mudl:
+            ActiveIngredients.objects.get_or_create(name=j.strip().lstrip('[').rstrip(']'))
     url = 'https://apteki.medsi.ru/health/lekarstva_i_bad/'
 
     html_text = requests.get(url).text
@@ -26,8 +26,8 @@ def Scrap():
     ad = soup.find_all('a', class_='catalog-filter__list-link')
     for i in ad:
         category, created = Category.objects.get_or_create(name=i.get('title'))
-        # if not created:
-        #     continue
+        if not created:
+            continue
         first_page = requests.get(base_url + i.get('href')).text
         first_pages = BeautifulSoup(first_page, 'lxml')
         product = first_pages.find_all('a', class_='product-list-item__title-link')
@@ -58,7 +58,11 @@ def Scrap():
                                            quantity=1,
                                            image=image)
             try:
-                active = ActiveIngredients.objects.get(name=ingredient.text).pk
-                med.active_element.set([active])
+                testing = ingredient.text.split(' + ')
+                for o in range(len(testing)):
+                    testing[o] = testing[o].strip().rstrip(']').lstrip('[')
+                active = ActiveIngredients.objects.filter(name__in=testing).values('pk')
+                med.active_element.set([lop['pk'] for lop in active])
             except Exception as e:
+                print(e)
                 print("Not category")
