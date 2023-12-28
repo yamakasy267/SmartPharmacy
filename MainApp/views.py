@@ -55,11 +55,11 @@ class GetMedicine(generics.ListAPIView):
                                                                                 'producer',
                                                                                 'total_amount',
                                                                                 'release_form',
-                                                                                'quantity', 'comments')
+                                                                                'quantity', 'comments', 'image')
         else:
             med = Medicines.objects.all().annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
-                                                                 'total_amount', 'release_form', 'quantity')
+                                                                 'total_amount', 'release_form', 'quantity', 'image')
         return Response(status=200, data={'med': med})
 
 
@@ -84,7 +84,7 @@ class GetMedicineForActiveElement(generics.ListAPIView):
         try:
             medicine = Medicines.objects.filter(active_element__name__in=request.GET.get('element')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
-                                                                 'total_amount', 'release_form', 'quantity')
+                                                                 'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
@@ -101,7 +101,7 @@ class GetMedicineForName(generics.ListAPIView):
         try:
             medicine = Medicines.objects.filter(name__icontains=request.GET.get('medicine_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
-                                                                 'total_amount', 'release_form', 'quantity')
+                                                                 'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
@@ -118,7 +118,7 @@ class GetMedicineForCategory(generics.ListAPIView):
         try:
             medicine = Medicines.objects.filter(category__name=request.GET.get('category_name')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
-                                                                 'total_amount', 'release_form', 'quantity')
+                                                                 'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
@@ -161,7 +161,7 @@ class GetFavorites(generics.ListAPIView):
         medic = Views.objects.filter(user_id_id=request.user.pk).values_list('medicine_id')
         views = Medicines.objects.filter(med_id__in=medic).annotate(
             element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
-                                                             'total_amount', 'release_form', 'quantity')
+                                                             'total_amount', 'release_form', 'quantity', 'image')
         return Response(status=200, data={'views': views})
 
 
@@ -296,7 +296,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
         medicine = Medicines.objects.filter(category=category).annotate(
             element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element',
                                                              'producer',
-                                                             'total_amount', 'release_form', 'quantity')
+                                                             'total_amount', 'release_form', 'quantity', 'image')
         return Response(status=200, data={'medicine': medicine})
 
 
