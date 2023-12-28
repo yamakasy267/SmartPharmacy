@@ -38,7 +38,8 @@ def Scrap():
             prod = BeautifulSoup(prod.text, 'lxml')
             amount = prod.find('span', class_='product-price mr-12').text.split()[:-1]
             amount = "".join(amount)
-
+            image = prod.find('div', class_='product-image-slider-item').find_next('a').href
+            image = base_url + image
             ingredient = prod.find('a', class_='anchor')
             producer = prod.find('span', class_='product-prop')
             while producer:
@@ -47,7 +48,6 @@ def Scrap():
                     break
                 producer = producer.find_next('span', class_='product-prop')
 
-
             med = Medicines.objects.create(name=prod.find('h1', class_='product-title').text,
                                            category=category,
                                            producer=producer,
@@ -55,12 +55,10 @@ def Scrap():
                                            release_form=prod.find('div', id='product-description').find('h3',
                                                                                                         class_='h5').find_next(
                                                'p').text,
-                                           quantity=1)
+                                           quantity=1,
+                                           image=image)
             try:
                 active = ActiveIngredients.objects.get(name=ingredient.text).pk
                 med.active_element.set([active])
             except Exception as e:
                 print("Not category")
-
-
-
