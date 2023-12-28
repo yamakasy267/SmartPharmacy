@@ -1,14 +1,12 @@
 from bs4 import BeautifulSoup
 import requests
-from rest_framework.decorators import action
-import re
-from re import sub
-from decimal import Decimal
-import io
-from datetime import datetime
+from celery import Celery
 from .models import ActiveIngredients, Category, Medicines
 
+app = Celery('myapp', broker='redis://redis:6379')
 
+
+@app.task
 def Scrap():
     base_url = 'https://apteki.medsi.ru/'
     active = []

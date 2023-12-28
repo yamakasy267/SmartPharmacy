@@ -1,28 +1,53 @@
 version: '3'
 
 services:
+  redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: [ 'CMD-SHELL', 'redis-cli ping | grep PONG' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   pg:
     image: postgres:14.7-alpine
     ports:
-      - 5432:5432
+      - '5432:5432'
     environment:
       POSTGRES_PASSWORD: smart
       POSTGRES_USER: smart
       POSTGRES_DB: smart
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U smart']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-#  app:
-#    build:
-#      context: .
-#      dockerfile: ./Dockerfile
-#    volumes:
-#      - '.:/home/web/app'
-#    ports:
-#      - 8000:8000
-#    env_file:
-#      - .env.dev
-#    links:
-#      - pg
-#    depends_on:
-#      - pg
-#    entrypoint: ./bin/dockerize -wait tcp://pg:5432 -timeout 60s
-#    command: python InternAcademy/manage.py runserver 0.0.0.0:8000
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - '.:/home/web/app'
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env.dev
+    links:
+      - pg
+      - redis
+    depends_on:
+      redis:
+        condition: service_healthy
+      pg:
+        condition: service_healthy
+
+    #entrypoint: ./bin/dockerize -wait tcp://pg:5432 -timeout 60s
+    command: python InternAcademy/manage.py runserver 0.0.0.0:8000
+
+volumes:
+  pgdata: Null

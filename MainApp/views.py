@@ -68,7 +68,7 @@ class TestScrap(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            Scrap()
+            Scrap.delay()
         except Exception as e:
             print(e)
             return Response(status=500)
