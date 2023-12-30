@@ -19,4 +19,5 @@ urlpatterns = [
     path('delete_comment/', DeleteComment.as_view()),
     path('get_logs/', GetLogs.as_view()),
     path('get_user_info/', GetUserInfo.as_view()),
+    path('delete_user/', DeleteUser.as_view()),
 ]
