@@ -170,7 +170,7 @@ class CreateFavorites(generics.CreateAPIView):
     authentication_classes = [JWTAuthorization]
 
     def post(self, request, *args, **kwargs):
-        Views.objects.create(user_id_id=request.user.pk, medicine_id=request.data.get('medicine_id'))
+        Views.objects.create(user_id_id=request.user.pk, medicine_id_id=request.data.get('medicine_id'))
         return Response(status=200)
 
 
@@ -238,9 +238,10 @@ class UpdateInfoUser(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         try:
             user = Users.objects.get(pk=request.user.pk)
-            user.name = request.data.get('name')
-            user.password = make_password(request.data.get('password'))
-            user.date_of_birth = request.data.get('date_of_birth')
+            user.name = request.data.get('name', user.name)
+            user.password = make_password(request.data.get('password', user.password))
+            user.date_of_birth = request.data.get('date_of_birth', user.date_of_birth)
+            user.save()
         except Exception as e:
             print(e)
             return Response(status=500)
@@ -272,7 +273,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            category = Symptoms.objects.get(name=request.GET.get('symptoms_name'))
+            category = Symptoms.objects.get(name__iexact=request.GET.get('symptoms_name'))
         except Exception as e:
             if request.GET.get('symptoms_name'):
                 moderator = Users.objects.filter(role__name='moderator').values('pk')
