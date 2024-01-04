@@ -1,59 +1,79 @@
 import Symptom from "./Symptom";
 import ProductItem from "./ProductItem";
-import {getCategory, getMedicineByName} from "../../http/ProductAPI";
+import {fetchMedicineByActiveElement} from "../../api/ProductAPI";
+import React, {useContext, useEffect, useState} from "react";
+import {Context} from "../../../index";
+import Container from "react-bootstrap/Container";
+import {Form, Spinner} from "react-bootstrap";
 
-function SearchByAnalogue() {
+const SearchByAnalogue = () => {
+  const {ProductStore} = useContext(Context)
+  const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  function getMedicine() {
+    setLoading(true)
+    fetchMedicineByActiveElement(searchQuery).then(data => {
+      // ProductStore.setProducts(data["med"])
+      // ProductStore.setTotalCount(data["med"].length)
+      setLoading(false)
+    });
+  }
+
+  useEffect(() => {
+    getMedicine()
+  }, [])
+
+  const onFormSubmit = e => {
+    e.preventDefault();
+    getMedicine()
+  }
+
+  useEffect(() => {
+    fetchMedicineByActiveElement(searchQuery).then(data => {
+      console.log(data)
+      // ProductStore.setProducts(data["med"])
+      // ProductStore.setTotalCount(data["med"].length)
+    });
+    //
+    // getActiveElements(searchQuery).then(data => {
+    //   ProductStore.setProducts(data["med"])
+    //   ProductStore.setTotalCount(data["med"].length)
+    // });
+
+  }, [searchQuery])
+
+  if (loading) {
+    return (
+      <Container className="d-flex flex-fill justify-content-center align-items-center">
+        <Spinner animation={"grow"}/>
+      </Container>
+    )
+  }
+
   return (
     <section id="items-section" className="container px-0 px-sm-5 mt-5">
       <div className="items-section__title d-flex p-1">
         <h6>Введите действующее вещество:</h6>
       </div>
-      <div className="d-flex mx-1 mb-4">
-        <div className="items-section__search d-flex flex-fill align-items-center justify-content-between pt-1 ps-1 me-1">
-          <div className="d-flex flex-wrap">
-            <input type="text" className="items-section__search-item items-section__search-line d-inline-flex p-2 me-1 mb-1" placeholder="Поиск..." aria-label="search" aria-describedby="input-group-left" />
-            <Symptom title="Головная боль" />
-            <Symptom title="Головокружение" />
-            <Symptom title="Повышенная температура" />
-            <Symptom title="Боль в горле" />
-          </div>
-          <button type="button" className="items-section__search_drop-btn px-2 pb-1" id="input-group-button-right">
-            <h5><i className="bi bi-x-lg"></i></h5>
-          </button>
+
+      <Form className="d-flex flex-wrap mb-4" onSubmit={onFormSubmit}>
+        <div className="items-section__search d-flex flex-fill mx-1">
+          <Form.Control type="search" className="items-section__search-line w-100 p-2" placeholder="Поиск..."
+                        aria-label="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+          />
         </div>
-        <div className="items-section__search_filter d-flex">
-          <button type="button" className="items-section__search_filter-btn p-1" id="input-group-button-right">
-            <h2><i className="bi bi-filter"></i></h2>
-          </button>
-        </div>
-      </div>
+        <button type="submit" className="default-btn default-btn_rich-green_bg-white btn__border_rich-brown mx-1">
+          Поиск
+        </button>
+      </Form>
 
       <div className="d-flex flex-wrap justify-content-center pb-4">
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="1" img="/assets/1.jpg" title="Название" vendor="Производитель"
-            substance="вещество1, вещество2" form="таблетки" quantity="10"
-            weight="500" favorite="228" price="200" />
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="2" img="/assets/2.jpg" title="Название" vendor="Производитель"
-            substance="вещество1, вещество2" form="таблетки" quantity="10"
-            weight="500" favorite="228" price="200" />
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="3" img="/assets/5.jpg" title="Название" vendor="Производитель"
-            substance="вещество1, вещество2" form="таблетки" quantity="10"
-            weight="500" favorite="228" price="200" />
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="4" img="/assets/5.jpg" title="Название" vendor="Производитель"
-            substance="вещество1, вещество2" form="таблетки" quantity="10"
-            weight="500" favorite="228" price="200" />
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="5" img="/assets/5.jpg" title="Название" vendor="Производитель"
-            substance="вещество1, вещество2" form="таблетки" quantity="10"
-            weight="500" favorite="228" price="200" />
-        </div>
+        {ProductStore.products.map((product, index) =>
+          <div key={index} className="col-lg-3 col-md-4 col-6 p-1">
+            <ProductItem product={product}/>
+          </div>
+        )}
       </div>
 
       <div className="items-section__page-num d-flex justify-content-center pb-4">

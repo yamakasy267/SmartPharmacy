@@ -1,55 +1,42 @@
 import Symptom from "./Symptom";
 import ProductItem from "./ProductItem";
+import React, {useContext, useEffect, useState} from "react";
+import {Context} from "../../../index";
+import {fetchMedicineByName} from "../../api/ProductAPI";
+import Container from "react-bootstrap/Container";
+import {Spinner} from "react-bootstrap";
 
-function SearchBySymptom() {
+const SearchBySymptom = () => {
+  const {ProductStore} = useContext(Context)
+  const [loading, setLoading] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    setLoading(true)
+    fetchMedicineByName("").then(data => {
+      ProductStore.setProducts(data["med"])
+      ProductStore.setTotalCount(data["med"].length)
+      setLoading(false)
+    });
+  }, [])
+
+  useEffect(() => {
+    fetchMedicineByName(searchQuery).then(data => {
+      ProductStore.setProducts(data["med"])
+      ProductStore.setTotalCount(data["med"].length)
+    });
+  }, [searchQuery])
+
+  if (loading) {
+    return (
+      <Container className="d-flex flex-fill justify-content-center align-items-center">
+        <Spinner animation={"grow"}/>
+      </Container>
+    )
+  }
+
   return (
     <section id="items-section" className="container px-0 px-sm-5 mt-5">
-
-      <div className="btn-group">
-        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuClickableInside"
-                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-          Clickable inside
-        </button>
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
-          <li>
-            <a className="dropdown-item">
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-                <label className="form-check-label" htmlFor="flexCheckDefault">
-                  Default checkbox
-                </label>
-              </div>
-            </a>
-          </li>
-          <li><a className="dropdown-item" href="#">Menu item</a></li>
-          <li><a className="dropdown-item" href="#">Menu item</a></li>
-        </ul>
-      </div>
-
-
-      <div className="dropdown">
-        <button type="button" className="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown"
-                aria-expanded="false">
-          Действие
-        </button>
-        <ul className="dropdown-menu">
-          <li>
-            <div className="checkbox">
-              <label>
-                <input type="checkbox"/>Two
-              </label>
-            </div>
-          </li>
-          <li>
-            <div className="checkbox">
-              <label>
-                <input type="checkbox"/>Two
-              </label>
-            </div>
-          </li>
-        </ul>
-      </div>
-
 
       <div className="items-section__title d-flex p-1">
         <h6>Введите симптомы:</h6>
@@ -70,39 +57,43 @@ function SearchBySymptom() {
             <h5><i className="bi bi-x-lg"></i></h5>
           </button>
         </div>
-        <div className="items-section__search_filter d-flex">
-          <button type="button" className="items-section__search_filter-btn p-1" id="input-group-button-right">
+
+        <div className="items-section__search_filter btn-group d-flex">
+          <button className="items-section__search_filter-btn p-1 " type="button" id="dropdownMenuClickableInside"
+                  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <h3><i className="bi bi-filter"></i></h3>
           </button>
+          <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuClickableInside">
+            <li>
+              <div className="dropdown-item1">
+                <div className="d-flex align-items-center">
+                  <input className="form-check-input m-0" type="radio" name="flexRadioDefault" id="flexRadioDefault1"/>
+                  <label className="form-check-label ps-2" htmlFor="flexRadioDefault1">
+                    По убыванию цены
+                  </label>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div className="dropdown-item1">
+                <div className="d-flex align-items-center">
+                  <input className="form-check-input m-0" type="radio" name="flexRadioDefault" id="flexRadioDefault2"/>
+                  <label className="form-check-label ps-2" htmlFor="flexRadioDefault2">
+                    По возрастанию цены
+                  </label>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
 
       <div className="d-flex flex-wrap justify-content-center pb-4">
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="1" img="/assets/1.jpg" title="Название" vendor="Производитель"
-                       substance="вещество1, вещество2" form="таблетки" quantity="10"
-                       weight="500" favorite="228" price="200"/>
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="2" img="/assets/2.jpg" title="Название" vendor="Производитель"
-                       substance="вещество1, вещество2" form="таблетки" quantity="10"
-                       weight="500" favorite="228" price="200"/>
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="3" img="/assets/5.jpg" title="Название" vendor="Производитель"
-                       substance="вещество1, вещество2" form="таблетки" quantity="10"
-                       weight="500" favorite="228" price="200"/>
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="4" img="/assets/5.jpg" title="Название" vendor="Производитель"
-                       substance="вещество1, вещество2" form="таблетки" quantity="10"
-                       weight="500" favorite="228" price="200"/>
-        </div>
-        <div className="col-lg-3 col-md-4 col-6 p-1">
-          <ProductItem id="5" img="/assets/5.jpg" title="Название" vendor="Производитель"
-                       substance="вещество1, вещество2" form="таблетки" quantity="10"
-                       weight="500" favorite="228" price="200"/>
-        </div>
+        {ProductStore.products.map((product, index) =>
+          <div key={index} className="col-lg-3 col-md-4 col-6 p-1">
+            <ProductItem product={product}/>
+          </div>
+        )}
       </div>
 
       <div className="items-section__page-num d-flex justify-content-center pb-4">

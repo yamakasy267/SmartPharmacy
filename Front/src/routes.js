@@ -1,56 +1,53 @@
 import {
-    ANALOGUE_SEARCH_ROUTE, LOGIN_ROUTE,
-    NAME_SEARCH_ROUTE,
-    PERSONAL_ROUTE, PRODUCT_ROUTE, REGISTRATION_ROUTE, SEARCH_BAR_ROUTE,
-    SYMPTOM_SEARCH_ROUTE
+    ADMIN_ROUTE,
+    LOGIN_ROUTE,
+    PERSONAL_ROUTE,
+    PRODUCT_ROUTE,
+    REGISTRATION_ROUTE,
+    UPDATE_USER_INFO_ROUTE
 } from "./components/utils/Consts";
 
-import Auth from "./components/pages/Auth";
 import {
-    Personal,
+    AdminPage,
+    AuthPage,
+    NotFoundPage,
+    PersonalPage,
     ProductPage,
-    SearchByAnalogue,
-    SearchByName,
-    SearchBySymptom,
-    SearchTypeBar
+    UpdateUserInfoPage
 } from "./components/utils";
 
-export const authRoutes = [
-    // {
-    //     path: ADMIN_ROUTE,
-    //     Component: Admin
-    // },
+export const adminRoutes = [
     {
-        path: PERSONAL_ROUTE,
-        Component: Personal
+        path: ADMIN_ROUTE,
+        Component: AdminPage
     },
 ]
 
+export const userRoutes = [
+    {
+        path: PERSONAL_ROUTE,
+        Component: PersonalPage
+    },
+    {
+        path: UPDATE_USER_INFO_ROUTE,
+        Component: UpdateUserInfoPage
+    },
+
+]
+
 export const publicRoutes = [
-    // {
-    //     path: LOGIN_ROUTE,
-    //     Component: Auth
-    // },
-    // {
-    //     path: REGISTRATION_ROUTE,
-    //     Component: Auth
-    // },
-    // {
-    //     path: SEARCH_BAR_ROUTE,
-    //     Component: SearchTypeBar
-    // },
-    // {
-    //     path: SYMPTOM_SEARCH_ROUTE,
-    //     Component: SearchBySymptom
-    // },
-    // {
-    //     path: ANALOGUE_SEARCH_ROUTE,
-    //     Component: SearchByAnalogue
-    // },
-    // {
-    //     path: NAME_SEARCH_ROUTE,
-    //     Component: SearchByName
-    // },
+    {
+        path: '*',
+        Component: NotFoundPage
+    },
+    {
+        path: LOGIN_ROUTE,
+        Component: AuthPage
+    },
+    {
+        path: REGISTRATION_ROUTE,
+        Component: AuthPage
+    },
     {
         path: PRODUCT_ROUTE + '/:id',
         Component: ProductPage

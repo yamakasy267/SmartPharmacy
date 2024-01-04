@@ -31,3 +31,6 @@ python manage.py migrate
 
 Для отчета:
 npm i @grapecity/activereports-react
+
+чисти чисти говно
+Truncate public."MainApp_category" cascade;
