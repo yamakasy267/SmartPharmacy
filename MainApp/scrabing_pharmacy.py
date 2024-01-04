@@ -26,8 +26,8 @@ def Scrap():
     ad = soup.find_all('a', class_='catalog-filter__list-link')
     for i in ad:
         category, created = Category.objects.get_or_create(name=i.get('title'))
-        if not created:
-            continue
+        # if not created:
+        #     continue
         first_page = requests.get(base_url + i.get('href')).text
         first_pages = BeautifulSoup(first_page, 'lxml')
         product = first_pages.find_all('a', class_='product-list-item__title-link')

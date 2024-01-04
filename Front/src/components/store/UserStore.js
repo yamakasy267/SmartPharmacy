@@ -1,33 +1,42 @@
 import {makeAutoObservable} from "mobx";
 
-// const user = new User('John', 'boba2@gmail.com', '1445', '2001-01-01');
 
 export default class UserStore {
-    constructor() {
-        this._isAuth = false
-        this._name = {};
-        this._email = {};
-        this._password = {};
-        this._date_of_birth = {};
+  constructor() {
+    this.isAuth_ = false
+    this.name_ = {};
+    this.email_ = {};
+    this.birthdate_ = {};
+    this.role_ = {};
 
-        makeAutoObservable(this)
-    }
+    makeAutoObservable(this)
+  }
 
-    setIsAuth(bool) {
-        this._isAuth = bool
-    }
-    setUser(user) {
-        this._name = user;
-        this._email = user;
-        this._password = user;
-        this._date_of_birth = user;
-    }
+  setIsAuth(bool) {
+    this.isAuth_ = bool
+  }
 
-    get isAuth() {
-        return this._isAuth
-    }
+  setUser(userData) {
+    this.name_ = userData.name;
+    this.email_ = userData.email;
+    this.birthdate_ = userData.date_of_birth;
+    this.role_ = userData.role__name;
+  }
 
-    get user() {
-        return this
-    }
+  get isAuth() {
+    return this.isAuth_
+  }
+
+  get isAdmin() {
+    return this.role_ === "admin"
+  }
+
+  get user() {
+    return this
+  }
+
+  logOut() {
+    this.setUser({})
+    this.setIsAuth(false)
+  }
 }

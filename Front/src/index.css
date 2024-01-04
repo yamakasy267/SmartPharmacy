@@ -5,6 +5,9 @@
 
 /* Colors */
 :root {
+  --header-height: 80px;
+  --footer-height: 80px;
+
   --color-rich-asphalt: #334253;
   --color-wet-asphalt: #67727E;
   --color-rich-green: #76A593;
@@ -118,15 +121,15 @@ header {
 }
 
 main {
-  padding-top: 54px;
-  min-height:calc(100% - 100px);
+  padding-top: var(--header-height);
+  min-height:calc(100% - 80px);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
 
 footer {
-  min-height: 100px;
+  min-height: var(--footer-height);
   background-color: var(--color-pale-brown);
 }
 
@@ -140,6 +143,16 @@ footer {
   }
 }
 
+@media (min-width: 768px) {
+  .ps-md-6 {
+    padding-left: 4.5rem!important;
+  }
+
+  .pe-md-6 {
+    padding-right: 4.5rem!important;
+  }
+}
+
 .ps-6 {
   padding-left: 4.5rem!important;
 }
@@ -147,8 +160,13 @@ footer {
 .bi-x-lg::before,
 .bi-filter::before,
 .bi-arrow-90deg-left::before,
-.bi-heart::before {
+.bi-heart::before,
+.bi-heart-fill::before {
   font-weight: bold !important;
+}
+
+.text_color {
+  color: var(--color-rich-green);
 }
 
 .background-snake__head {
@@ -242,6 +260,15 @@ footer {
   color: var(--color-rich-green);
 }
 
+
+.dropdown-item1 {
+  display: block;
+  padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
+  color: var(--bs-dropdown-link-color);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 /* Product */
 .product {
   background-color: var(--color-white);
@@ -264,6 +291,7 @@ footer {
 .product__info_stat {
     color: var(--color-pale-pink);
 }
+
 
 /* comment */
 .comment {
@@ -426,4 +454,16 @@ footer {
 
 .btn__border_rich-green:focus-visible {
   border-color: var(--color-rich-brown);
+}
+
+
+/* map-section */
+.map-section {
+  height: 300px;
+  width: 100%;
+}
+
+.ymaps-2-1-79-map {
+  height: inherit;
+  width: inherit;
 }

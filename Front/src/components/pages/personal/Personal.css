@@ -10,12 +10,16 @@
 }
 
 .personal__info_birthdate {
-  color: #67727E;
-  border-bottom: 1px solid #67727E;
+  color: var(--color-wet-asphalt);
+  border-bottom: 1px solid var(--color-wet-asphalt);
+}
+
+.personal__info_change {
+  color: var(--color-rich-green);
 }
 
 .personal__info_delete {
-  color: #EFAC98;
+  color: var(--color-pale-pink);
   font-weight: 500;
   line-height: 24px;
 }
