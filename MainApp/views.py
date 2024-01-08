@@ -60,11 +60,14 @@ class GetMedicine(generics.ListAPIView):
                                                                                 'quantity', 'comments', 'image')
         else:
             start = int(request.GET.get('start', 0))
-            count = int(request.GET.get('count', -1))
+
             med = Medicines.objects.all().annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity', 'image')
+            remains = len(med)
+            count = int(request.GET.get('count', remains))
             med = list(med[start:start + count])
+            med.append({'count_element': remains - (start + count)})
         return Response(status=200, data={'med': med})
 
 
@@ -229,10 +232,13 @@ class DeleteComment(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            coment = Comments.objects.get(pk=request.data.get('comment_id'), user_id=request.user)
-            med = Medicines.objects.get(comment=coment)
-            med.comment.remove(coment)
-            coment.delete()
+            if request.user.role == 'admin' or request.user.role == 'moderator':
+                comment = Comments.objects.get(pk=request.data.get('comment_id'))
+            else:
+                comment = Comments.objects.get(pk=request.data.get('comment_id'), user_id=request.user)
+            med = Medicines.objects.get(comment=comment)
+            med.comment.remove(comment)
+            comment.delete()
         except Exception as e:
             print(e)
             return Response(status=500)
