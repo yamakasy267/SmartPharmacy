@@ -7,7 +7,7 @@ import {
   SYMPTOM_SEARCH_ROUTE
 } from "../../utils/Consts";
 import {observer} from "mobx-react-lite";
-import MapModule from "../../Map";
+import MapModule from "../../MapModule";
 
 const SearchTypeBar = observer(() => {
   const location = useLocation().pathname

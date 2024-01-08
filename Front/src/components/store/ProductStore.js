@@ -1,65 +1,70 @@
 import {makeAutoObservable} from "mobx";
 
 export default class ProductStore {
-    constructor() {
-        this._categories = []
-        this._activeIngredients = []
-        this._products = []
-        this._selectedCategory = {}
-        this._selectedActiveIngredient = {}
-        this._page = 1
-        this._totalCount = 0
-        this._limit = 1
-        makeAutoObservable(this)
-    }
+  constructor() {
+    this.products_ = [];
+    this.totalCount_ = 0;
+    this.page_ = 1;
+    this.limit_ = 1;
+    // this.categories_ = [];
+    // this.activeElements_ = [];
+    // this.selectedCategory_ = {};
+    // this.selectedActiveElement_ = {};
+    makeAutoObservable(this);
+  }
 
-    setCategories(categories) {
-        this._categories = categories
-    }
-    setActiveIngredients(activeIngredients) {
-        this._activeIngredients = activeIngredients
-    }
-    setProducts(products) {
-        this._products = products
-    }
+  get products() {
+    return this.products_;
+  }
 
-    setSelectedCategory(category) {
-        this.setPage(1)
-        this._selectedCategory = category
-    }
-    setSelectedActiveIngredient(activeIngredient) {
-        this.setPage(1)
-        this._selectedActiveIngredient = activeIngredient
-    }
-    setPage(page) {
-        this._page = page
-    }
-    setTotalCount(count) {
-        this._totalCount = count
-    }
+  setProducts(products) {
+    this.products_ = products;
+  }
 
-    get categories() {
-        return this._categories
-    }
-    get activeIngredients() {
-        return this._activeIngredients
-    }
-    get products() {
-        return this._products
-    }
-    get selectedCategory() {
-        return this._selectedCategory
-    }
-    get selectedActiveIngredient() {
-        return this._selectedActiveIngredient
-    }
-    get totalCount() {
-        return this._totalCount
-    }
-    get page() {
-        return this._page
-    }
-    get limit() {
-        return this._limit
-    }
+  get totalCount() {
+    return this.totalCount_;
+  }
+
+  setTotalCount(count) {
+    this.totalCount_ = count;
+  }
+
+  get page() {
+    return this.page_;
+  }
+
+  setPage(page) {
+    this.page_ = page;
+  }
+
+  get limit() {
+    return this.limit_;
+  }
+
+  // get categories() {
+  //   return this.categories_;
+  // }
+  // set categories(categories) {
+  //   this.categories_ = categories
+  // }
+  // get activeElements() {
+  //   return this.activeElements_;
+  // }
+  // set activeElements(activeElements) {
+  //   this.activeElements_ = activeElements
+  // }
+  // get selectedCategory() {
+  //   return this.selectedCategory_;
+  // }
+  // set selectedCategory(category) {
+  //   this.page_(1);
+  //   this.selectedCategory_ = category;
+  // }
+  // get selectedActiveElement() {
+  //   return this.selectedActiveElement_;
+  // }
+  // setSelectedActiveElement(activeElement) {
+  //   this.page_(1);
+  //   this.selectedActiveElement_ = activeElement;
+  // }
 }

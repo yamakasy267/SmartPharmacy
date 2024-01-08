@@ -1,40 +1,23 @@
 import React, {useEffect, useRef} from "react";
 import "./AdminPage.css";
-import { Viewer } from "@grapecity/activereports-react";
-import "@grapecity/activereports/pdfexport";
-import "@grapecity/activereports/htmlexport";
-import "@grapecity/activereports/tabulardataexport";
+import {REPORT_ROUTE} from "../../utils/Consts";
+import {Link} from "react-router-dom";
 
 const AdminPage = () => {
-  const viewerRef = useRef(null);
-  const viewerUri = "../report.rdlx-json"
-  function onPreview(){
-    viewerRef.current.Viewer.open(viewerUri, {
-      ReportParams: [
-        {
-          Name: "start",
-          Value: ["2023-11-11"],
-        },
-        {
-          Name: "end",
-          Value: ["2023-12-30"],
-        },
-        {
-          Name: "token",
-          // ${localStorage.getItem('token')}
-          Value: ["Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MiwiZXhwIjoxNzAzNTIwMDM0fQ.BFGw6h7CMLksMCCeinHw_r9PGJ22YI3NQ4zypSmkVbQ"],
-        },
-      ],
-    })
-  }
-
-  useEffect(()=>{
-    onPreview();
-  }, [])
 
   return (
-    <div id="viewer-host">
-      <Viewer ref={viewerRef} />
+    <div className="container d-flex flex-column">
+      <div>1. тут у нас будут выводиться пользователи и будет поиск по ним можно будет удалять и
+        редактировать личную инфу пользователей
+      </div>
+      <div>2. конфигурирование цепочек симптомы - лекарства</div>
+
+      <div>3. добавить возможность удалять комментарии</div>
+      <div>4. удаление favorite</div>
+      <div>5. починить пагинацию</div>
+      <div>6. починить пагинацию</div>
+
+      <Link to={REPORT_ROUTE}>Создать отчет</Link>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 export const ADMIN_ROUTE = '/admin'
+export const REPORT_ROUTE = '/report'
 export const LOGIN_ROUTE = '/login'
 export const SEARCH_BAR_ROUTE = '/'
 export const REGISTRATION_ROUTE = '/registration'

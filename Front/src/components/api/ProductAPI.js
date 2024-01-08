@@ -1,8 +1,7 @@
-import {$userHost, $guestHost} from "./index";
+import {$guestHost, $userHost} from "./index";
 
 export const scrap = async () => {
-  const {data} = await $guestHost.get('api/scrap/');
-  console.log(data);
+  return await $guestHost.get('api/scrap/');
 }
 
 export const fetchCategory = async (type) => {
@@ -53,23 +52,16 @@ export const createComment = async (medicine_id, comment) => {
   return data;
 }
 
+export const deleteComment = async (comment_id) => {
+  const {data} = await $userHost.post('api/delete_comment/', {comment_id: comment_id});
+  return data;
+}
+
 
 // export const createCategory = async (type) => {
 //     const {data} = await $authHost.post('api/type', type)
 //     return data
 // }
-//
-//
-// export const createBrand = async (brand) => {
-//     const {data} = await $authHost.post('api/brand', brand)
-//     return data
-// }
-//
-// export const fetchBrands = async () => {
-//     const {data} = await $guestHost.get('api/brand', )
-//     return data
-// }
-//
 // export const createDevice = async (device) => {
 //     const {data} = await $authHost.post('api/device', device)
 //     return data
@@ -79,10 +71,5 @@ export const createComment = async (medicine_id, comment) => {
 //     const {data} = await $guestHost.get('api/device', {params: {
 //             typeId, brandId, page, limit
 //         }})
-//     return data
-// }
-//
-// export const fetchOneDevice = async (id) => {
-//     const {data} = await $guestHost.get('api/device/' + id)
 //     return data
 // }

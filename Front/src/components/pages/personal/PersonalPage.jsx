@@ -5,28 +5,21 @@ import ProductItem from "../search/ProductItem";
 import React, {useContext, useEffect, useState} from "react";
 import {Context} from "../../../index";
 import {fetchFavorites} from "../../api/ProductAPI";
-import {Spinner} from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import Loading from "../../LoadingModule";
 
 const PersonalPage = () => {
-  const {FavoriteProducts} = useContext(Context)
+  const {favoriteProducts} = useContext(Context)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     setLoading(true)
     fetchFavorites().then(data => {
-      FavoriteProducts.setProducts(data["views"])
+      favoriteProducts.setProducts(data["views"])
       setLoading(false)
     })
   }, [])
 
-  if (loading) {
-    return (
-      <Container className="d-flex flex-fill justify-content-center align-items-center">
-        <Spinner animation={"grow"}/>
-      </Container>
-    )
-  }
+  if (loading) { return <Loading/> }
 
   return (
     <div className="container d-flex">
@@ -35,7 +28,7 @@ const PersonalPage = () => {
           <PersonalInfo/>
         </div>
         <div className="d-flex flex-wrap justify-content-center">
-          {FavoriteProducts.products.map((product, index) =>
+          {favoriteProducts.products.map((product, index) =>
             <div key={index} className="col-xl-3 col-lg-4 col-sm-6 col-6 p-1">
               <ProductItem product={product}/>
             </div>
