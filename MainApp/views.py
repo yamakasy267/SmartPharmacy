@@ -99,8 +99,11 @@ class GetMedicineForActiveElement(generics.ListAPIView):
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
         start = int(request.GET.get('start', 0))
-        count = int(request.GET.get('count', -1))
-        return Response(status=200, data={'med': list(medicine[start:start + count])})
+        remains = len(medicine)
+        count = int(request.GET.get('count', remains))
+        medicine = list(medicine[start:start + count])
+        medicine.append({'count_element': remains - (start + count)})
+        return Response(status=200, data={'med': medicine})
 
 
 class GetMedicineForName(generics.ListAPIView):
@@ -118,8 +121,11 @@ class GetMedicineForName(generics.ListAPIView):
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
         start = int(request.GET.get('start', 0))
-        count = int(request.GET.get('count', -1))
-        return Response(status=200, data={'med': list(medicine[start:start + count])})
+        remains = len(medicine)
+        count = int(request.GET.get('count', remains))
+        medicine = list(medicine[start:start + count])
+        medicine.append({'count_element': remains - (start + count)})
+        return Response(status=200, data={'med': medicine})
 
 
 class GetMedicineForCategory(generics.ListAPIView):
@@ -137,8 +143,11 @@ class GetMedicineForCategory(generics.ListAPIView):
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
         start = int(request.GET.get('start', 0))
-        count = int(request.GET.get('count', -1))
-        return Response(status=200, data={'med': list(medicine[start:start + count])})
+        remains = len(medicine)
+        count = int(request.GET.get('count', remains))
+        medicine = list(medicine[start:start + count])
+        medicine.append({'count_element': remains - (start + count)})
+        return Response(status=200, data={'med': medicine})
 
 
 class GetCategory(generics.ListAPIView):
@@ -327,6 +336,11 @@ class GetMedicineForSymptoms(generics.ListAPIView):
             element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element',
                                                              'producer',
                                                              'total_amount', 'release_form', 'quantity', 'image')
+        start = int(request.GET.get('start', 0))
+        remains = len(medicine)
+        count = int(request.GET.get('count', remains))
+        medicine = list(medicine[start:start + count])
+        medicine.append({'count_element': remains - (start + count)})
         return Response(status=200, data={'medicine': medicine})
 
 
