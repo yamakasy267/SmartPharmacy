@@ -48,7 +48,9 @@ class GetMedicine(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         if request.GET.get('medicine_id'):
             med = Medicines.objects.filter(pk=request.GET['medicine_id']).annotate(
-                comments=JSONBAgg(JSONObject(text='comment__text', user='comment__user_id__name'))).annotate(
+                comments=JSONBAgg(JSONObject(text='comment__text', user='comment__user_id__name',
+                                             user_id='comment__user_id', date='comment__date',
+                                             id_com='comment__pk'))).annotate(
                 element=ArrayAgg('active_element__name', distinct=True)).values('pk', 'name',
                                                                                 'category__name',
                                                                                 'element',
@@ -57,10 +59,12 @@ class GetMedicine(generics.ListAPIView):
                                                                                 'release_form',
                                                                                 'quantity', 'comments', 'image')
         else:
+            start = int(request.GET.get('start', 0))
+            count = int(request.GET.get('count', -1))
             med = Medicines.objects.all().annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity', 'image')
-        return Response(status=200, data={'med': med})
+        return Response(status=200, data={'med': list(med[start:start + count])})
 
 
 class TestScrap(generics.ListAPIView):
@@ -90,7 +94,9 @@ class GetMedicineForActiveElement(generics.ListAPIView):
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
-        return Response(status=200, data={'med': medicine})
+        start = int(request.GET.get('start', 0))
+        count = int(request.GET.get('count', -1))
+        return Response(status=200, data={'med': list(medicine[start:start + count])})
 
 
 class GetMedicineForName(generics.ListAPIView):
@@ -107,7 +113,9 @@ class GetMedicineForName(generics.ListAPIView):
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
-        return Response(status=200, data={'med': medicine})
+        start = int(request.GET.get('start', 0))
+        count = int(request.GET.get('count', -1))
+        return Response(status=200, data={'med': list(medicine[start:start + count])})
 
 
 class GetMedicineForCategory(generics.ListAPIView):
@@ -124,7 +132,9 @@ class GetMedicineForCategory(generics.ListAPIView):
             Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
             return Response(status=500)
         Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
-        return Response(status=200, data={'med': medicine})
+        start = int(request.GET.get('start', 0))
+        count = int(request.GET.get('count', -1))
+        return Response(status=200, data={'med': list(medicine[start:start + count])})
 
 
 class GetCategory(generics.ListAPIView):
@@ -171,6 +181,18 @@ class CreateFavorites(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         Views.objects.create(user_id_id=request.user.pk, medicine_id_id=request.data.get('medicine_id'))
+        return Response(status=200)
+
+
+class DeleteFavorites(generics.DestroyAPIView):
+    permission_classes = [IsAuth]
+    authentication_classes = [JWTAuthorization]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            Views.objects.get(pk=request.GET.get('favorites_id')).delete()
+        except Exception as e:
+            return Response(status=500, data={'error': e})
         return Response(status=200)
 
 
@@ -330,8 +352,22 @@ class GetUserInfo(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user = Users.objects.filter(pk=request.user.pk).values('pk', 'name', 'email', 'date_of_birth', 'role__name')[0]
+            user = \
+                Users.objects.filter(pk=request.user.pk).values('pk', 'name', 'email', 'date_of_birth', 'role__name')[0]
         except Exception as e:
             print(e)
             return Response(status=500)
         return Response(status=200, data={'user': user})
+
+
+class GetAllUsersInfo(generics.ListAPIView):
+    permission_classes = [IsAdmin]
+    authentication_classes = [JWTAuthorization]
+
+    def get(self, request, *args, **kwargs):
+        user = request.GET.get('user_id', None)
+        if user:
+            users = Users.objects.filter(pk=user).values('pk', 'name', 'email', 'date_of_birth', 'role__name')
+        else:
+            users = Users.objects.all().values('pk', 'name', 'email', 'date_of_birth', 'role__name')
+        return Response(status=200, data={'user': users})
