@@ -22,5 +22,7 @@ urlpatterns = [
     path('get_user_info/', GetUserInfo.as_view()),
     path('get_all_users_info/', GetAllUsersInfo.as_view()),
     path('delete_user/', DeleteUser.as_view()),
+    path('set_chain/', SetChain.as_view()),
+    path('get_chain/', GetChainQueue.as_view()),
     path('update_user_info/', UpdateInfoUser.as_view()),
 ]

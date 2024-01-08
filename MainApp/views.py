@@ -64,7 +64,8 @@ class GetMedicine(generics.ListAPIView):
             med = Medicines.objects.all().annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity', 'image')
-        return Response(status=200, data={'med': list(med[start:start + count])})
+            med = list(med[start:start + count])
+        return Response(status=200, data={'med': med})
 
 
 class TestScrap(generics.ListAPIView):
@@ -190,7 +191,7 @@ class DeleteFavorites(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            Views.objects.get(pk=request.GET.get('favorites_id')).delete()
+            Views.objects.get(medicine_id_id=request.GET.get('medicine_id')).delete()
         except Exception as e:
             return Response(status=500, data={'error': e})
         return Response(status=200)
