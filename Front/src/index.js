@@ -11,15 +11,14 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import './index.css';
 
-
 export const Context = createContext(null)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Context.Provider value={{
     user: new UserStore(),
-    ProductStore: new ProductStore(),
-    FavoriteProducts: new FavoriteProductStorage()
+    productStore: new ProductStore(),
+    favoriteProducts: new FavoriteProductStorage()
   }}>
     <App/>
   </Context.Provider>

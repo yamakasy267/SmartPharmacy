@@ -3,37 +3,30 @@ import ProductItem from "./ProductItem";
 import React, {useContext, useEffect, useState} from "react";
 import {Context} from "../../../index";
 import {fetchMedicineByName} from "../../api/ProductAPI";
-import Container from "react-bootstrap/Container";
-import {Spinner} from "react-bootstrap";
+import Loading from "../../LoadingModule";
 
 const SearchBySymptom = () => {
-  const {ProductStore} = useContext(Context)
+  const {productStore} = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     setLoading(true)
     fetchMedicineByName("").then(data => {
-      ProductStore.setProducts(data["med"])
-      ProductStore.setTotalCount(data["med"].length)
+      productStore.setProducts(data["med"])
+      productStore.setTotalCount(data["med"].length)
       setLoading(false)
     });
   }, [])
 
   useEffect(() => {
     fetchMedicineByName(searchQuery).then(data => {
-      ProductStore.setProducts(data["med"])
-      ProductStore.setTotalCount(data["med"].length)
+      productStore.setProducts(data["med"])
+      productStore.setTotalCount(data["med"].length)
     });
   }, [searchQuery])
 
-  if (loading) {
-    return (
-      <Container className="d-flex flex-fill justify-content-center align-items-center">
-        <Spinner animation={"grow"}/>
-      </Container>
-    )
-  }
+  if (loading) { return <Loading/> }
 
   return (
     <section id="items-section" className="container px-0 px-sm-5 mt-5">
@@ -89,7 +82,7 @@ const SearchBySymptom = () => {
       </div>
 
       <div className="d-flex flex-wrap justify-content-center pb-4">
-        {ProductStore.products.map((product, index) =>
+        {productStore.products.map((product, index) =>
           <div key={index} className="col-lg-3 col-md-4 col-6 p-1">
             <ProductItem product={product}/>
           </div>

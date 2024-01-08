@@ -3,9 +3,9 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Pagination} from "react-bootstrap";
 
-const Pages = observer(() => {
-  const {ProductStore} = useContext(Context)
-  const pageCount = Math.ceil(ProductStore.totalCount / ProductStore.limit)
+const PaginationModule = observer(() => {
+  const {productStore} = useContext(Context)
+  const pageCount = Math.ceil(productStore.totalCount / productStore.limit)
   const pages = []
 
   for (let i = 0; i < pageCount; i++) {
@@ -17,8 +17,8 @@ const Pages = observer(() => {
       {pages.map(page =>
         <Pagination.Item
           key={page}
-          active={ProductStore.page === page}
-          onClick={() => ProductStore.setPage(page)}
+          active={productStore.page === page}
+          onClick={() => productStore.setPage(page)}
         >
           {page}
         </Pagination.Item>
@@ -27,4 +27,4 @@ const Pages = observer(() => {
   );
 });
 
-export default Pages;
+export default PaginationModule;

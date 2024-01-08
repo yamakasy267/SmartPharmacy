@@ -4,6 +4,7 @@ import {
     PERSONAL_ROUTE,
     PRODUCT_ROUTE,
     REGISTRATION_ROUTE,
+    REPORT_ROUTE,
     UPDATE_USER_INFO_ROUTE
 } from "./components/utils/Consts";
 
@@ -13,6 +14,7 @@ import {
     NotFoundPage,
     PersonalPage,
     ProductPage,
+    ReportPage,
     UpdateUserInfoPage
 } from "./components/utils";
 
@@ -21,6 +23,10 @@ export const adminRoutes = [
         path: ADMIN_ROUTE,
         Component: AdminPage
     },
+    {
+        path: REPORT_ROUTE,
+        Component: ReportPage
+    }
 ]
 
 export const userRoutes = [
@@ -31,8 +37,7 @@ export const userRoutes = [
     {
         path: UPDATE_USER_INFO_ROUTE,
         Component: UpdateUserInfoPage
-    },
-
+    }
 ]
 
 export const publicRoutes = [
@@ -51,5 +56,5 @@ export const publicRoutes = [
     {
         path: PRODUCT_ROUTE + '/:id',
         Component: ProductPage
-    },
+    }
 ]

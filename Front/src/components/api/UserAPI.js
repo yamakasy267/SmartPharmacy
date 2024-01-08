@@ -22,12 +22,6 @@ export const fetchUserInfo = async () => {
   return data;
 }
 
-// export const updateUserInfo = async (name, password, birthdate) => {
-//   const {data} = await $userHost.put('api/update_user_info/?name=' + name + "&password=" + password + "&date_of_birth=" + birthdate);
-//   console.log(data);
-//   return data;
-// }
-
 export const updateUserInfo = async (name, password, birthdate) => {
   const {data} = await $userHost.put('api/update_user_info/', {name: name, password: password, date_of_birth: birthdate});
   console.log(data);

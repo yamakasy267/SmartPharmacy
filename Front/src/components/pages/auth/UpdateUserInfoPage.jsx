@@ -4,7 +4,7 @@ import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 
 import {LOGIN_ROUTE, PERSONAL_ROUTE, REGISTRATION_ROUTE} from "../../utils/Consts";
-import {getUserInfo, login, registration, updateUserInfo} from "../../api/UserAPI";
+import {fetchUserInfo, getUserInfo, login, registration, updateUserInfo} from "../../api/UserAPI";
 import {Context} from "../../../index";
 
 import "./Auth.css";
@@ -39,6 +39,9 @@ const UpdateUserInfoPage = observer(() => {
 
     try {
       await updateUserInfo(name, password, user.birthdate_);
+
+      let userData = await fetchUserInfo();
+      user.setUser(userData["user"])
     } catch {
       alert("Проверьте вводимые данные!");
       return;

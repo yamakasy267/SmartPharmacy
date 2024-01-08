@@ -3,19 +3,19 @@ import ProductItem from "./ProductItem";
 import {fetchMedicineByActiveElement} from "../../api/ProductAPI";
 import React, {useContext, useEffect, useState} from "react";
 import {Context} from "../../../index";
-import Container from "react-bootstrap/Container";
-import {Form, Spinner} from "react-bootstrap";
+import {Form} from "react-bootstrap";
+import Loading from "../../LoadingModule";
 
 const SearchByAnalogue = () => {
-  const {ProductStore} = useContext(Context)
+  const {productStore} = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   function getMedicine() {
     setLoading(true)
     fetchMedicineByActiveElement(searchQuery).then(data => {
-      // ProductStore.setProducts(data["med"])
-      // ProductStore.setTotalCount(data["med"].length)
+      // productStore.products(data["med"])
+      // productStore.totalCount(data["med"].length)
       setLoading(false)
     });
   }
@@ -32,24 +32,18 @@ const SearchByAnalogue = () => {
   useEffect(() => {
     fetchMedicineByActiveElement(searchQuery).then(data => {
       console.log(data)
-      // ProductStore.setProducts(data["med"])
-      // ProductStore.setTotalCount(data["med"].length)
+      // productStore.setProducts(data["med"])
+      // productStore.setTotalCount(data["med"].length)
     });
     //
     // getActiveElements(searchQuery).then(data => {
-    //   ProductStore.setProducts(data["med"])
-    //   ProductStore.setTotalCount(data["med"].length)
+    //   productStore.setProducts(data["med"])
+    //   productStore.setTotalCount(data["med"].length)
     // });
 
   }, [searchQuery])
 
-  if (loading) {
-    return (
-      <Container className="d-flex flex-fill justify-content-center align-items-center">
-        <Spinner animation={"grow"}/>
-      </Container>
-    )
-  }
+  if (loading) { return <Loading/> }
 
   return (
     <section id="items-section" className="container px-0 px-sm-5 mt-5">
@@ -69,7 +63,7 @@ const SearchByAnalogue = () => {
       </Form>
 
       <div className="d-flex flex-wrap justify-content-center pb-4">
-        {ProductStore.products.map((product, index) =>
+        {productStore.products.map((product, index) =>
           <div key={index} className="col-lg-3 col-md-4 col-6 p-1">
             <ProductItem product={product}/>
           </div>

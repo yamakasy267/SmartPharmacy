@@ -2,21 +2,33 @@ import React, {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router";
 import {Context} from "../../../index";
 import {LOGIN_ROUTE} from "../../utils/Consts";
-import {createFavorite, getFavorites} from "../../api/ProductAPI";
+import {createFavorite} from "../../api/ProductAPI";
+import Loading from "../../LoadingModule";
 
 const ProductItem = ({product}) => {
   const navigate = useNavigate()
   const {user} = useContext(Context)
-  const {FavoriteProducts} = useContext(Context)
+  const {favoriteProducts} = useContext(Context)
+  const [isFavorite, setFavorite] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // setLoading(true)
+    setLoading(true)
+    setFavorite(favoriteProducts.products.find(favoriteProduct => favoriteProduct.pk === product.pk) !== undefined)
+    setLoading(false)
   }, [])
 
   function createFavoriteProduct(id) {
     let data = createFavorite(id)
-    console.log(data)
+    setFavorite(true)
   }
+
+  function removeFromFavorites(id) {
+    setFavorite(false)
+    // let data = createFavorite(id)
+  }
+
+  if (loading) { return <Loading/> }
 
   return (
     <div className="product h-100 d-flex flex-column px-4" onClick={() => navigate('/product/' + product.pk)}>
@@ -24,14 +36,13 @@ const ProductItem = ({product}) => {
         {user.isAuth ?
           <button type="button" className="p-0" onClick={e => {
             e.stopPropagation();
-            createFavoriteProduct(product.pk)
-            // console.log(product.pk)
+            isFavorite ? removeFromFavorites(product.pk) : createFavoriteProduct(product.pk)
           }}>
             <h4 className="product__info_stat">
-              {FavoriteProducts.products.find(favoriteProduct => favoriteProduct.pk === product.pk) === undefined ?
-                <i className="bi bi-heart"></i>
-                :
+              {isFavorite ?
                 <i className="bi bi-heart-fill"></i>
+                :
+                <i className="bi bi-heart"></i>
               }
             </h4>
           </button>

@@ -1,15 +1,20 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom'
-import {createComment, fetchFavorites, fetchMedicine} from "../../api/ProductAPI";
+import {createComment, createFavorite, fetchMedicine} from "../../api/ProductAPI";
 import {Context} from "../../../index";
-import {Form, Spinner} from "react-bootstrap";
-import Container from "react-bootstrap/Container";
+import {Form} from "react-bootstrap";
+import {LOGIN_ROUTE} from "../../utils/Consts";
+import {useNavigate} from "react-router";
+import Loading from "../../LoadingModule";
 
 const ProductPage = () => {
   const {user} = useContext(Context)
+  const navigate = useNavigate()
   const [product, setProduct] = useState([])
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
+  const {favoriteProducts} = useContext(Context)
+  const [isFavorite, setFavorite] = useState(false)
   const [loading, setLoading] = useState(false)
   const {id} = useParams()
 
@@ -23,6 +28,7 @@ const ProductPage = () => {
   useEffect(() => {
     setLoading(true)
     getMedicine(id)
+    setFavorite(favoriteProducts.products.find(favoriteProduct => favoriteProduct.pk === Number(id)) !== undefined)
     setLoading(false)
   }, []);
 
@@ -33,7 +39,7 @@ const ProductPage = () => {
     return false
   }
 
-  function trimWhitespaces (str) {
+  function trimWhitespaces(str) {
     str = str.replace(/^\s+/, '');
     for (let i = str.length - 1; i >= 0; i--) {
       if (/\S/.test(str.charAt(i))) {
@@ -56,22 +62,48 @@ const ProductPage = () => {
     }
   }
 
-  if (loading) {
-    return (
-      <Container className="d-flex flex-fill justify-content-center align-items-center">
-        <Spinner animation={"grow"}/>
-      </Container>
-    )
+  function createFavoriteProduct(id) {
+    let data = createFavorite(id)
+    setFavorite(true)
   }
+
+  function removeFromFavorites(id) {
+    setFavorite(false)
+    // let data = createFavorite(id)
+  }
+
+  if (loading) { return <Loading/> }
 
   return (
     <div className="d-flex flex-column align-items-center">
       <div className="product col-8 d-flex flex-column px-4 pt-4 mb-3">
+
         <div className="d-flex justify-content-end">
-          <h4 className="product__info_stat">
-            <i className="bi bi-heart"></i>
-          </h4>
+          {user.isAuth ?
+            <button type="button" className="p-0" onClick={e => {
+              e.stopPropagation();
+              isFavorite ? removeFromFavorites(product.pk) : createFavoriteProduct(product.pk)
+            }}>
+              <h4 className="product__info_stat">
+                {isFavorite ?
+                  <i className="bi bi-heart-fill"></i>
+                  :
+                  <i className="bi bi-heart"></i>
+                }
+              </h4>
+            </button>
+            :
+            <button type="button" className="p-0" onClick={e => {
+              e.stopPropagation();
+              navigate(LOGIN_ROUTE);
+            }}>
+              <h4 className="product__info_stat">
+                <i className="bi bi-heart"></i>
+              </h4>
+            </button>
+          }
         </div>
+
         <div className="d-flex px-5">
           <div className="col align-self-center text-center">
             <img src="/assets/2.jpg" className="img-fluid w-50" alt="Фото товара"/>
@@ -178,24 +210,34 @@ const ProductPage = () => {
 
 const Comment = ({comment}) => {
   const {user} = useContext(Context)
+
+  function removeComment(id) {
+    // deleteComment(id)
+  }
+
   return (
     <div className="comment col-7 d-flex flex-column mt-2 p-4">
       <div className="comment__info px-5 pb-2">
-        <div className="d-flex pb-4">
-          <h6 className="fw-bold">{comment.user}</h6>
-          &emsp;&emsp;&emsp;
-          <h6>месяц назад</h6>
+        <div className="d-flex justify-content-between pb-4">
+          <div className="d-flex align-items-center">
+            <h6 className="fw-bold pe-4">@{comment.user}</h6>
+            <h6>месяц назад</h6>
+          </div>
+          {comment.user === user.name_ &&
+            <h6 className="comment__affiliation py-1 px-4">Вы</h6>
+          }
         </div>
         <h6>{comment.text}</h6>
       </div>
-      {/*{user.isAuth &&*/}
-      {/*  <div className="d-flex align-self-end">*/}
-      {/*    <button type="button" className="d-flex default-btn default-btn_rich-green">*/}
-      {/*      <i className="bi bi-arrow-90deg-left">&ensp;</i>*/}
-      {/*      <h6 className="fw-bold">Ответить</h6>*/}
-      {/*    </button>*/}
-      {/*  </div>*/}
-      {/*}*/}
+      {/*{comment.id === user.id &&*/}
+      {(comment.user === user.name_ || user.isAdmin) &&
+        <div className="d-flex align-self-end px-5">
+          <button type="button" className="d-flex default-btn default-btn_rich-green" onClick={removeComment()}>
+            <i className="bi bi-trash-fill">&ensp;</i>
+            <h6 className="fw-bold">Удалить</h6>
+          </button>
+        </div>
+      }
     </div>
   )
 }

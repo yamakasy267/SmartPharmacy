@@ -13,7 +13,7 @@ import {fetchFavorites} from "../../api/ProductAPI";
 
 const AuthPage = observer(() => {
   const {user} = useContext(Context)
-  const {FavoriteProducts} = useContext(Context)
+  const {favoriteProducts} = useContext(Context)
   const location = useLocation()
   const navigate = useNavigate()
   const isLogin = location.pathname === LOGIN_ROUTE
@@ -51,10 +51,10 @@ const AuthPage = observer(() => {
         navigate(PERSONAL_ROUTE)
       }
 
-      user.setIsAuth(true)
+      user.setAuth(true)
 
       fetchFavorites().then(data => {
-        FavoriteProducts.setProducts(data["views"])
+        favoriteProducts.setProducts(data["views"])
         console.log(data["views"])
       })
     } catch (e) {

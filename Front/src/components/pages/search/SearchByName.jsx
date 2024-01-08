@@ -1,21 +1,22 @@
 import ProductItem from "./ProductItem";
 import React, {useContext, useEffect, useState} from "react";
 import {Context} from "../../../index";
-import {Form, Spinner} from "react-bootstrap";
+import {Form} from "react-bootstrap";
 import {fetchMedicineByName} from "../../api/ProductAPI";
 import Container from "react-bootstrap/Container";
-import Pages from "../../Pages";
+import Pagination from "../../PaginationModule";
+import Loading from "../../LoadingModule";
 
 const SearchByName = () => {
-  const {ProductStore} = useContext(Context)
+  const {productStore} = useContext(Context)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
   function getMedicine() {
     setLoading(true)
     fetchMedicineByName(searchQuery).then(data => {
-      ProductStore.setProducts(data["med"])
-      ProductStore.setTotalCount(data["med"].length)
+      productStore.setProducts(data["med"])
+      productStore.setTotalCount(data["med"].length)
       setLoading(false)
     });
   }
@@ -31,20 +32,12 @@ const SearchByName = () => {
 
   useEffect(() => {
     fetchMedicineByName(searchQuery).then(data => {
-      ProductStore.setProducts(data["med"])
-      ProductStore.setTotalCount(data["med"].length)
+      productStore.setProducts(data["med"])
+      productStore.setTotalCount(data["med"].length)
     });
   }, [searchQuery])
 
-
-
-  if (loading) {
-    return (
-      <Container className="d-flex flex-fill justify-content-center align-items-center">
-        <Spinner animation={"grow"}/>
-      </Container>
-    )
-  }
+  if (loading) { return <Loading/> }
 
   return (
     <section id="items-section" className="container px-0 px-sm-5 mt-5">
@@ -63,9 +56,12 @@ const SearchByName = () => {
         </button>
       </Form>
 
+      <div>По вашему запросу найдено:</div>
+      <div>Страница 2: 6-10</div>
+
       <div className="d-flex flex-wrap justify-content-center pb-4">
-        {ProductStore._totalCount ?
-          ProductStore.products.map((product, index) =>
+        {productStore.totalCount ?
+          productStore.products.map((product, index) =>
             <div key={index} className="col-lg-3 col-md-4 col-6 p-1">
               <ProductItem product={product}/>
             </div>
@@ -84,7 +80,7 @@ const SearchByName = () => {
         <h5>&ensp;&bull;&ensp;</h5>
         <h5 className="fw-bold">3</h5>
 
-        <Pages/>
+        <Pagination/>
       </div>
 
     </section>
