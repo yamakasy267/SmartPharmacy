@@ -37,7 +37,7 @@ class Auntification(generics.CreateAPIView):
         try:
             token = serializer.createToken(validated_data)
         except Exception as e:
-            return Response(status=500, data={'error': e})
+            return Response(status=500, data={'error': str(e)})
         return Response(status=200, data={"token": f"Token {token}"})
 
 
@@ -58,6 +58,7 @@ class GetMedicine(generics.ListAPIView):
                                                                                 'total_amount',
                                                                                 'release_form',
                                                                                 'quantity', 'comments', 'image')
+            remains = 1
         else:
             start = int(request.GET.get('start', 0))
 
@@ -67,8 +68,7 @@ class GetMedicine(generics.ListAPIView):
             remains = len(med)
             count = int(request.GET.get('count', remains))
             med = list(med[start:start + count])
-            med.append({'count_element': remains - (start + count)})
-        return Response(status=200, data={'med': med})
+        return Response(status=200, data={'med': med, 'count': remains})
 
 
 class TestScrap(generics.ListAPIView):
@@ -102,8 +102,7 @@ class GetMedicineForActiveElement(generics.ListAPIView):
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
         medicine = list(medicine[start:start + count])
-        medicine.append({'count_element': remains - (start + count)})
-        return Response(status=200, data={'med': medicine})
+        return Response(status=200, data={'med': medicine, 'count': remains})
 
 
 class GetMedicineForName(generics.ListAPIView):
@@ -124,8 +123,7 @@ class GetMedicineForName(generics.ListAPIView):
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
         medicine = list(medicine[start:start + count])
-        medicine.append({'count_element': remains - (start + count)})
-        return Response(status=200, data={'med': medicine})
+        return Response(status=200, data={'med': medicine, 'count': remains})
 
 
 class GetMedicineForCategory(generics.ListAPIView):
@@ -146,8 +144,7 @@ class GetMedicineForCategory(generics.ListAPIView):
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
         medicine = list(medicine[start:start + count])
-        medicine.append({'count_element': remains - (start + count)})
-        return Response(status=200, data={'med': medicine})
+        return Response(status=200, data={'med': medicine, 'count': remains})
 
 
 class GetCategory(generics.ListAPIView):
@@ -203,7 +200,7 @@ class DeleteFavorites(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            Views.objects.get(medicine_id_id=request.GET.get('medicine_id')).delete()
+            Views.objects.get(medicine_id_id=request.data.get('medicine_id')).delete()
         except Exception as e:
             return Response(status=500, data={'error': e})
         return Response(status=200)
@@ -340,8 +337,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
         medicine = list(medicine[start:start + count])
-        medicine.append({'count_element': remains - (start + count)})
-        return Response(status=200, data={'medicine': medicine})
+        return Response(status=200, data={'medicine': medicine, 'count': remains})
 
 
 class GetChainQueue(generics.ListAPIView):
@@ -391,4 +387,5 @@ class GetAllUsersInfo(generics.ListAPIView):
             users = Users.objects.filter(pk=user).values('pk', 'name', 'email', 'date_of_birth', 'role__name')
         else:
             users = Users.objects.all().values('pk', 'name', 'email', 'date_of_birth', 'role__name')
-        return Response(status=200, data={'user': users})
+        remains = len(users)
+        return Response(status=200, data={'user': users, 'count': remains})
