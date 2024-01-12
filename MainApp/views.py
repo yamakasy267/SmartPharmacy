@@ -88,9 +88,8 @@ class GetMedicineForActiveElement(generics.ListAPIView):
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
-
         try:
-            medicine = Medicines.objects.filter(active_element__name__in=request.GET.get('element')).annotate(
+            medicine = Medicines.objects.filter(active_element__name__icontains=request.GET.get('element')).annotate(
                 element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element', 'producer',
                                                                  'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
@@ -345,7 +344,7 @@ class GetChainQueue(generics.ListAPIView):
     authentication_classes = [JWTAuthorization]
 
     def get(self, request, *args, **kwargs):
-        chain = ChainQueue.objects.filter(moderator=request.user).values()
+        chain = ChainQueue.objects.filter(moderator=request.user).values('pk', 'symptoms')
         return Response(status=200, data={'chain': chain})
 
 
@@ -356,7 +355,9 @@ class SetChain(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         symptoms = []
         for i in request.data.get('chain'):
-            symptoms.append(Symptoms(symptoms=i['symptoms'], category_id=i['category']))
+            if i['category'] > 0:
+                symptoms.append(Symptoms(symptoms=i['symptoms'], category_id=i['category']))
+
             chain = ChainQueue.objects.get(pk=i['id'])
             chain.delete()
         Symptoms.objects.bulk_create(symptoms)
