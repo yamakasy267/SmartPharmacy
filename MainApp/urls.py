@@ -11,6 +11,7 @@ urlpatterns = [
     path('get_medicine_by_element/', GetMedicineForActiveElement.as_view()),
     path('get_medicine_by_name/', GetMedicineForName.as_view()),
     path('get_medicine_by_category/', GetMedicineForCategory.as_view()),
+    path('get_medicine_by_symptoms/', GetMedicineForSymptoms.as_view()),
     path('get_category/', GetCategory.as_view()),
     path('get_active_element/', GetActiveElement.as_view()),
     path('get_favorites/', GetFavorites.as_view()),

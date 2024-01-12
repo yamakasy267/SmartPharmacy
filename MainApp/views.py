@@ -311,15 +311,19 @@ class GetMedicineForSymptoms(generics.ListAPIView):
         except Exception as e:
             if request.GET.get('symptoms_name'):
                 moderator = Users.objects.filter(role__name='moderator').values('pk')
-                last_moderator = ChainQueue.objects.last().pk
+                last_moderator = ChainQueue.objects.last()
+                if not last_moderator:
+                    last_moderator = moderator[0].get('pk')
+                else:
+                    last_moderator = last_moderator.moderator_id
                 if len(moderator) > 1:
                     count = 0
                     for i in moderator:
                         if i['pk'] == last_moderator:
                             count += 1
-                            if count > len(moderator):
+                            if count >= len(moderator):
                                 count = 0
-                            last_moderator = moderator[count].pk
+                            last_moderator = moderator[count].get('pk')
                             break
                         count += 1
                 ChainQueue.objects.create(symptoms=request.GET.get('symptoms_name'), moderator_id=last_moderator)
