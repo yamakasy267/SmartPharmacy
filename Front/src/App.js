@@ -1,27 +1,39 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import {observer} from "mobx-react-lite";
 import {Footer, Header} from "./components/utils";
-import {scrap} from "./components/api/ProductAPI";
+import {fetchFavorites} from "./components/api/ProductAPI";
 import Loading from "./components/LoadingModule";
+import {Context} from "./index";
+import {fetchUserInfo} from "./components/api/UserAPI";
 
 const App = observer(() => {
+  const {user} = useContext(Context);
+  const {favoriteProducts} = useContext(Context);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // check().then(data => {
-    //     user.setUser(true)
-    //     user.setAuth(true)
-    // }).finally(() => setLoading(false))
+    async function checkTokenValid() {
+      let userData = await fetchUserInfo().catch(() => {});
+      if (userData) {
+        user.setUser(userData["user"]);
+        user.setAuth(true);
 
-    // let data = scrap()
-    // console.log(data)
+        fetchFavorites().then(data => {
+          favoriteProducts.setProducts(data["views"]);
+        })
+      }
+      setLoading(false)
+    }
 
-    setLoading(false)
+    checkTokenValid().then(r => {})
   }, [])
 
-  if (loading) { return <Loading/> }
+
+  if (loading) {
+    return <Loading/>
+  }
 
   return (
     <BrowserRouter>

@@ -216,7 +216,6 @@ class CreateComment(generics.CreateAPIView):
     authentication_classes = [JWTAuthorization]
 
     def post(self, request, *args, **kwargs):
-        print(request.user)
         try:
             com = Comments.objects.create(user_id_id=request.user.pk, text=request.data.get('comment'))
             medic = Medicines.objects.get(pk=request.data.get('medicine_id'))

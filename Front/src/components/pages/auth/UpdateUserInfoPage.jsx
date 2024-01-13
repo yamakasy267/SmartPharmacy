@@ -1,15 +1,14 @@
 import React, {useContext, useState} from 'react';
 import {Container, Form} from "react-bootstrap";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {observer} from "mobx-react-lite";
 
-import {LOGIN_ROUTE, PERSONAL_ROUTE, REGISTRATION_ROUTE} from "../../utils/Consts";
-import {fetchUserInfo, getUserInfo, login, registration, updateUserInfo} from "../../api/UserAPI";
+import {PERSONAL_ROUTE} from "../../utils/Consts";
+import {fetchUserInfo, updateUserInfo} from "../../api/UserAPI";
 import {Context} from "../../../index";
 
 import "./Auth.css";
 import arrow_right from "../../../assets/arrow-right.svg";
-import {getMedicineByName} from "../../api/ProductAPI";
 
 const UpdateUserInfoPage = observer(() => {
   const {user} = useContext(Context)
@@ -21,7 +20,7 @@ const UpdateUserInfoPage = observer(() => {
   const UpdateUserInfo = async (e) => {
     e.preventDefault();
 
-    switch ("") {
+    switch ('') {
       case name: alert("Заполните поле \"Имя\"!"); return;
       case password: alert("Заполните поле \"Пароль\"!"); return;
       case verificationPassword: alert("Заполните поле \"Email\"!"); return;
@@ -53,10 +52,10 @@ const UpdateUserInfoPage = observer(() => {
     <Container className="d-flex flex-fill justify-content-center align-items-center">
       <div className='modal__body w-100 p-4'>
         <Form className="d-flex flex-column" onSubmit={UpdateUserInfo}>
-          <h4 className="text-center text-sm-start p-0 pt-0 pt-sm-1 px-0 px-sm-4 fw-bold">
+          <h4 className="text-center text-sm-start py-0 py-sm-1 px-0 px-sm-4 fw-bold">
             Изменение личных данных
           </h4>
-          <div className="d-flex flex-column py-3 py-sm-4 p-0 p-sm-4">
+          <div className="d-flex flex-column py-4 py-sm-3 px-0 px-sm-4">
             <h6 className="ps-1 pb-1">Новое имя:</h6>
             <Form.Control className="modal__input p-2"
                           value={name} onChange={e => setName(e.target.value)}

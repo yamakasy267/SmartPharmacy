@@ -31,27 +31,25 @@ const SearchTypeBar = observer(() => {
 
   return (
     <div className="d-flex flex-fill flex-column">
-      <section className="position-relative d-flex flex-column container pb-5" id="search-type-section">
+      <section className="position-relative d-flex flex-column container" id="search-type-section">
         <div className="container">
           <div className="text-center px-md-3">
             <nav className="d-flex flex-wrap justify-content-center">
-              {
-                searchTab.map(({title, content, route}, index) => (
-                  <NavLink key={index} to={route}
-                           className="search-type-section__label w-100 col-sm mx-md-4 mx-sm-2 mb-sm-0 mb-3">
-                    <div className="h-100 d-flex flex-column justify-content-center p-4">
-                      <h5 className="search-type-section__label-title mb-2">{title}</h5>
-                      <h6 className="search-type-section__label-content">{content}</h6>
-                    </div>
-                  </NavLink>
-                ))
-              }
+              {searchTab.map(({title, content, route}, index) => (
+                <NavLink key={index} to={route}
+                         className="search-type-section__label w-100 col-sm mx-md-4 mx-sm-2 mb-sm-0 mb-3">
+                  <div className="h-100 d-flex flex-column justify-content-center p-4">
+                    <h5 className="search-type-section__label-title mb-2">{title}</h5>
+                    <h6 className="search-type-section__label-content">{content}</h6>
+                  </div>
+                </NavLink>
+              ))}
             </nav>
           </div>
         </div>
       </section>
       <Outlet/>
-      { location === SEARCH_BAR_ROUTE &&
+      {location === SEARCH_BAR_ROUTE &&
         <MapModule/>
       }
     </div>

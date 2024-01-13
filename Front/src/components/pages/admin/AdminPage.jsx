@@ -1,25 +1,33 @@
-import React, {useEffect, useRef} from "react";
+import React, {useContext} from "react";
 import "./AdminPage.css";
 import {REPORT_ROUTE} from "../../utils/Consts";
 import {Link} from "react-router-dom";
+import {Context} from "../../../index";
+import UserTableModule from "./UserTableModule";
+import {observer} from "mobx-react-lite";
+import ChainTableModule from "./ChainTableModule";
 
-const AdminPage = () => {
+const AdminPage = observer(() => {
+  const {user} = useContext(Context);
 
   return (
     <div className="container d-flex flex-column">
-      <div>1. тут у нас будут выводиться пользователи и будет поиск по ним можно будет удалять и
-        редактировать личную инфу пользователей
+      <div className="product d-flex align-items-center p-3 mb-4">
+        <h5 className="fw-bold pe-4">Конфигуратор отчетов</h5>
+        <Link to={REPORT_ROUTE}>
+          <button type="submit" className="btn btn-secondary">Создать отчет</button>
+        </Link>
       </div>
-      <div>2. конфигурирование цепочек симптомы - лекарства</div>
 
-      <div>3. добавить возможность удалять комментарии</div>
-      <div>4. удаление favorite</div>
-      <div>5. починить пагинацию</div>
-      <div>6. починить пагинацию</div>
+      {user.isModerator &&
+        <ChainTableModule/>
+      }
 
-      <Link to={REPORT_ROUTE}>Создать отчет</Link>
+      {user.isAdmin &&
+        <UserTableModule/>
+      }
     </div>
   );
-}
+});
 
 export default AdminPage;

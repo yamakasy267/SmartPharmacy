@@ -33,4 +33,23 @@ python manage.py migrate
 npm i @grapecity/activereports-react
 
 чисти чисти говно
-Truncate public."MainApp_category" cascade;
+TRUNCATE TABLE
+public."MainApp_activeingredients",
+public."MainApp_category",
+public."MainApp_chainqueue",
+public."MainApp_comments",
+public."MainApp_medicines",
+public."MainApp_medicines_active_element",
+public."MainApp_medicines_comment",
+public."MainApp_symptoms",
+public."MainApp_views",
+public."MainApp_users"
+RESTART IDENTITY cascade;
+
+
+TRUNCATE TABLE
+public."MainApp_medicines_active_element",
+public."MainApp_category",
+public."MainApp_activeingredients",
+public."MainApp_medicines"
+RESTART IDENTITY cascade;

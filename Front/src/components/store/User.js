@@ -1,6 +1,6 @@
 import {makeAutoObservable} from "mobx";
 
-export default class UserStore {
+export default class User {
   constructor() {
     this.isAuth_ = false
     this.id_ = {};
@@ -24,7 +24,7 @@ export default class UserStore {
     this.role_ = userData.role__name;
   }
 
-  get Id() {
+  get id() {
     return this.id_;
   }
 
@@ -50,6 +50,10 @@ export default class UserStore {
 
   get isAdmin() {
     return this.role_ === "admin";
+  }
+
+  get isModerator() {
+    return this.role_ === "moderator";
   }
 
   get user() {

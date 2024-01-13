@@ -1,25 +1,12 @@
-import './Personal.css';
-
 import PersonalInfo from "./PersonalInfo";
 import ProductItem from "../search/ProductItem";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext} from "react";
 import {Context} from "../../../index";
-import {fetchFavorites} from "../../api/ProductAPI";
-import Loading from "../../LoadingModule";
+
+import './Personal.css';
 
 const PersonalPage = () => {
-  const {favoriteProducts} = useContext(Context)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    setLoading(true)
-    fetchFavorites().then(data => {
-      favoriteProducts.setProducts(data["views"])
-      setLoading(false)
-    })
-  }, [])
-
-  if (loading) { return <Loading/> }
+  const {favoriteProducts} = useContext(Context);
 
   return (
     <div className="container d-flex">

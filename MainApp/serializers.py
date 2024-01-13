@@ -38,7 +38,6 @@ class AuntificationSerialization(serializers.ModelSerializer):
         if not check_pas:
             raise Exception('bad password')
         dt = datetime.datetime.now() + datetime.timedelta(days=1)
-        print(dt)
         token = jwt.encode({
             'id': user.pk,
             'exp': int(dt.timestamp())},

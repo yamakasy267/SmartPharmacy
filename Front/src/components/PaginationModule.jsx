@@ -1,30 +1,56 @@
 import React, {useContext} from 'react';
-import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import {Pagination} from "react-bootstrap";
+import ReactPaginate from "react-paginate";
 
-const PaginationModule = observer(() => {
-  const {productStore} = useContext(Context)
-  const pageCount = Math.ceil(productStore.totalCount / productStore.limit)
-  const pages = []
+const PaginationModule = () => {
+  const {productStorage} = useContext(Context)
+  const pageCount = Math.ceil(productStorage.totalCount / productStorage.limit)
 
-  for (let i = 0; i < pageCount; i++) {
-    pages.push(i + 1)
-  }
+  // const pages = []
+  // for (let i = 0; i < pageCount; i++) {
+  //   pages.push(i + 1)
+  // }
+  //
+  // return (
+  //   <Pagination className="mt-3">
+  //     {pages.map(page =>
+  //       <Pagination.Item
+  //         key={page}
+  //         active={productStorage.page === page}
+  //         onClick={() => productStorage.setPage(page)}
+  //       >
+  //         {page}
+  //       </Pagination.Item>
+  //     )}
+  //   </Pagination>
+  // );
+
+  const handlePageClick = (event) => {
+    productStorage.setPage(event.selected)
+  };
 
   return (
-    <Pagination className="mt-3">
-      {pages.map(page =>
-        <Pagination.Item
-          key={page}
-          active={productStore.page === page}
-          onClick={() => productStore.setPage(page)}
-        >
-          {page}
-        </Pagination.Item>
-      )}
-    </Pagination>
+    <ReactPaginate
+      onPageChange={handlePageClick}
+      pageRangeDisplayed={3}
+      marginPagesDisplayed={2}
+      pageCount={pageCount}
+      nextLabel="Вперёд >"
+      previousLabel="< Назад"
+      pageClassName="page-item"
+      pageLinkClassName="page-link"
+      previousClassName="page-item"
+      previousLinkClassName="page-link"
+      nextClassName="page-item"
+      nextLinkClassName="page-link"
+      breakLabel="..."
+      breakClassName="page-item"
+      breakLinkClassName="page-link"
+      containerClassName="pagination"
+      activeClassName="active"
+      renderOnZeroPageCount={null}
+    />
   );
-});
+}
 
 export default PaginationModule;
