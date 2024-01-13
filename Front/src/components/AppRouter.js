@@ -33,7 +33,7 @@ const AppRouter = observer(() => {
       {user.isAuth && userRoutes.map(({path, Component}, index) => (
         <Route key={index} path={path} element={<Component/>}/>
       ))}
-      {user.isAdmin && adminRoutes.map(({path, Component}, index) => (
+      {(user.isModerator || user.isAdmin)  && adminRoutes.map(({path, Component}, index) => (
         <Route key={index} path={path} element={<Component/>}/>
       ))}
     </Routes>

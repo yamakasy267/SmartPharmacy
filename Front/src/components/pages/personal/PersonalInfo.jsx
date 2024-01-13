@@ -1,11 +1,9 @@
-import './Personal.css';
 import React, {useContext} from "react";
 import {Context} from "../../../index";
-import arrow_right from "../../../assets/arrow-right.svg";
-import {changeUserInfo, deleteUser, updateUserInfo} from "../../api/UserAPI";
-import {PERSONAL_ROUTE, SEARCH_BAR_ROUTE, UPDATE_USER_INFO_ROUTE} from "../../utils/Consts";
+import {UPDATE_USER_INFO_ROUTE} from "../../utils/Consts";
 import {useNavigate} from "react-router-dom";
-import {SearchTypeBar} from "../../utils";
+
+import './Personal.css';
 
 const PersonalInfo = () => {
   const {user} = useContext(Context)

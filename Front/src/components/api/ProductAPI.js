@@ -1,13 +1,7 @@
-import {$guestHost, $userHost} from "./index";
+import {$adminHost, $guestHost, $userHost} from "./index";
 
 export const scrap = async () => {
   return await $guestHost.get('api/scrap/');
-}
-
-export const fetchCategory = async (type) => {
-  const {data} = await $guestHost.get('api/get_category/');
-  console.log(data);
-  return data;
 }
 
 export const fetchMedicine = async (id) => {
@@ -15,25 +9,28 @@ export const fetchMedicine = async (id) => {
   return data;
 }
 
-export const fetchMedicineByName = async (searchQuery) => {
-  const {data} = await $guestHost.get('api/get_medicine_by_name/?medicine_name=' + searchQuery);
+export const fetchMedicineBySymptom = async (searchQuery, start, count) => {
+  const {data} = await $guestHost.get('api/get_medicine_by_symptoms/?symptoms_name=' + searchQuery + '&start=' + start + '&count=' + count);
   return data;
 }
 
-export const fetchMedicineByActiveElement = async (searchQuery) => {
-  const {data} = await $guestHost.get('api/get_medicine_by_element/?element=' + searchQuery);
+export const fetchMedicineByActiveElement = async (searchQuery, start, count) => {
+  const {data} = await $guestHost.get('api/get_medicine_by_element/?element=' + searchQuery + '&start=' + start + '&count=' + count);
+  return data;
+}
+
+export const fetchMedicineByName = async (searchQuery, start, count) => {
+  const {data} = await $guestHost.get('api/get_medicine_by_name/?medicine_name=' + searchQuery + '&start=' + start + '&count=' + count);
   return data;
 }
 
 export const fetchActiveElements = async () => {
   const {data} = await $guestHost.get('api/get_active_element/');
-  console.log(data);
   return data;
 }
 
 export const fetchCategories = async () => {
   const {data} = await $guestHost.get('api/get_category/');
-  console.log(data);
   return data;
 }
 
@@ -47,29 +44,28 @@ export const createFavorite = async (id) => {
   return data;
 }
 
+export const deleteFavorite = async (id) => {
+  const {data} = await $userHost.delete('api/delete_favorite/', {data: {medicine_id: id}});
+  return data;
+}
+
 export const createComment = async (medicine_id, comment) => {
   const {data} = await $userHost.post('api/create_comment/', {medicine_id: medicine_id, comment: comment});
   return data;
 }
 
-export const deleteComment = async (comment_id) => {
-  const {data} = await $userHost.post('api/delete_comment/', {comment_id: comment_id});
+export const deleteComment = async (id) => {
+  const {data} = await $userHost.delete('api/delete_comment/', {data: {comment_id: id}});
   return data;
 }
 
+export const fetchChains = async () => {
+  const {data} = await $adminHost.get('api/get_chain/');
+  return data;
+}
 
-// export const createCategory = async (type) => {
-//     const {data} = await $authHost.post('api/type', type)
-//     return data
-// }
-// export const createDevice = async (device) => {
-//     const {data} = await $authHost.post('api/device', device)
-//     return data
-// }
-//
-// export const fetchDevices = async (typeId, brandId, page, limit= 5) => {
-//     const {data} = await $guestHost.get('api/device', {params: {
-//             typeId, brandId, page, limit
-//         }})
-//     return data
-// }
+export const createChain = async (chain) => {
+  console.log(chain)
+  const {data} = await $adminHost.post('api/set_chain/', {chain: chain});
+  return data;
+}

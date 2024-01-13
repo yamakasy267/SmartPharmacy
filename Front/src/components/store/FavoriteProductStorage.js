@@ -2,9 +2,10 @@ import {makeAutoObservable} from "mobx";
 
 export default class FavoriteProductStorage {
   constructor() {
-    this.products_ = [];
     makeAutoObservable(this);
   }
+
+  products_ = [];
 
   get products() {
     return this.products_;

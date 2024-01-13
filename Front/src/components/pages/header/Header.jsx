@@ -1,15 +1,13 @@
 import React, {useContext} from 'react';
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 
 import './Header.css';
 import {Context} from "../../../index";
 import Navbar from "react-bootstrap/Navbar";
-import {ADMIN_ROUTE, LOGIN_ROUTE, PERSONAL_ROUTE, SEARCH_BAR_ROUTE, SYMPTOM_SEARCH_ROUTE} from "../../utils/Consts";
-import Nav from "react-bootstrap/Nav";
+import {ADMIN_ROUTE, LOGIN_ROUTE, PERSONAL_ROUTE, SEARCH_BAR_ROUTE} from "../../utils/Consts";
 
 function Header() {
   const {user} = useContext(Context)
-  const navigate = useNavigate()
   const location = useLocation().pathname
 
   return (
@@ -23,32 +21,24 @@ function Header() {
         <div className="pe-0 pe-md-6">
           {user.isAuth ?
             <div className="d-flex">
-              { location !== PERSONAL_ROUTE &&
-                <Nav className="p-0 mx-2" onClick={() => navigate(PERSONAL_ROUTE)}>
-                  <a type="button" className="header__log-in-btn">
-                    <h6>Кабинет</h6>
-                  </a>
-                </Nav>
+              {location !== PERSONAL_ROUTE &&
+                <NavLink to={PERSONAL_ROUTE} className="header__log-in-btn p-0 mx-2">
+                  <h6>Кабинет</h6>
+                </NavLink>
               }
-              { user.isAdmin && location !== ADMIN_ROUTE &&
-                <Nav className="p-0 mx-2" onClick={() => navigate(ADMIN_ROUTE)}>
-                  <a type="button" className="header__log-in-btn">
-                    <h6>Админ панель</h6>
-                  </a>
-                </Nav>
+              {(user.isModerator || user.isAdmin) && location !== ADMIN_ROUTE &&
+                <NavLink to={ADMIN_ROUTE} className="header__log-in-btn p-0 mx-2">
+                  <h6>Админ. панель</h6>
+                </NavLink>
               }
-              <Nav className="p-0 mx-2" onClick={() => user.logOut()}>
-                <a type="button" className="header__log-in-btn" onClick={() => navigate(0)}>
-                  <h6>Выйти</h6>
-                </a>
-              </Nav>
+              <NavLink to={window.location.href} onClick={() => user.logOut()} className="header__log-in-btn p-0 mx-2">
+                <h6>Выйти</h6>
+              </NavLink>
             </div>
             :
-            <Nav className="p-0">
-              <a type="button" className="header__log-in-btn" onClick={() => navigate(LOGIN_ROUTE)}>
-                <h6>Войти</h6>
-              </a>
-            </Nav>
+            <NavLink to={LOGIN_ROUTE} className="header__log-in-btn p-0">
+              <h6>Войти</h6>
+            </NavLink>
           }
         </div>
       </Navbar>

@@ -210,7 +210,6 @@ class CreateComment(generics.CreateAPIView):
     authentication_classes = [JWTAuthorization]
 
     def post(self, request, *args, **kwargs):
-        print(request.user)
         try:
             com = Comments.objects.create(user_id_id=request.user.pk, text=request.data.get('comment'))
             medic = Medicines.objects.get(pk=request.data.get('medicine_id'))
@@ -307,7 +306,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            category = Symptoms.objects.get(name__iexact=request.GET.get('symptoms_name'))
+            category = Symptoms.objects.get(name__iexact=request.GET.get('symptoms_name')).category
         except Exception as e:
             if request.GET.get('symptoms_name'):
                 moderator = Users.objects.filter(role__name='moderator').values('pk')
@@ -360,10 +359,11 @@ class SetChain(generics.CreateAPIView):
         symptoms = []
         for i in request.data.get('chain'):
             if i['category'] > 0:
-                symptoms.append(Symptoms(symptoms=i['symptoms'], category_id=i['category']))
+                symptoms.append(Symptoms(name=i['symptoms'], category_id=i['category']))
 
-            chain = ChainQueue.objects.get(pk=i['id'])
-            chain.delete()
+            if i.get('id'):
+                chain = ChainQueue.objects.get(pk=i['id'])
+                chain.delete()
         Symptoms.objects.bulk_create(symptoms)
         return Response(status=200)
 
