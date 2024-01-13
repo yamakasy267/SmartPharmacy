@@ -94,9 +94,11 @@ class GetMedicineForActiveElement(generics.ListAPIView):
                                                                  'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
-            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
+            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e,
+                                    date=datetime.datetime.now())
             return Response(status=500)
-        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
+        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200,
+                                date=datetime.datetime.now())
         start = int(request.GET.get('start', 0))
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
@@ -115,9 +117,11 @@ class GetMedicineForName(generics.ListAPIView):
                                                                  'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
-            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
+            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e,
+                                    date=datetime.datetime.now())
             return Response(status=500)
-        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
+        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200,
+                                date=datetime.datetime.now())
         start = int(request.GET.get('start', 0))
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
@@ -136,9 +140,11 @@ class GetMedicineForCategory(generics.ListAPIView):
                                                                  'total_amount', 'release_form', 'quantity', 'image')
         except Exception as e:
             print(e)
-            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e)
+            Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=500, response_text=e,
+                                    date=datetime.datetime.now())
             return Response(status=500)
-        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200)
+        Requests.objects.create(user=request.user.__str__(), search_type="Name", response_code=200,
+                                date=datetime.datetime.now())
         start = int(request.GET.get('start', 0))
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
@@ -307,7 +313,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            category = Symptoms.objects.get(name__iexact=request.GET.get('symptoms_name'))
+            category = Symptoms.objects.get(name__iexact=request.GET.get('symptoms_name')).category
         except Exception as e:
             if request.GET.get('symptoms_name'):
                 moderator = Users.objects.filter(role__name='moderator').values('pk')
@@ -327,15 +333,23 @@ class GetMedicineForSymptoms(generics.ListAPIView):
                             break
                         count += 1
                 ChainQueue.objects.create(symptoms=request.GET.get('symptoms_name'), moderator_id=last_moderator)
+                Requests.objects.create(user=request.user.__str__(), search_type="Symptoms", response_code=501,
+                                        response_text=e,
+                                        date=datetime.datetime.now())
                 return Response(status=501, data={
                     'error': 'Пока мы не знаем рецепта от вашей болезни, но в скоре наши врачи с этим справяться'})
             else:
                 print(e)
+                Requests.objects.create(user=request.user.__str__(), search_type="Symptoms", response_code=500,
+                                        response_text=e,
+                                        date=datetime.datetime.now())
                 return Response(status=500)
         medicine = Medicines.objects.filter(category=category).annotate(
             element=ArrayAgg('active_element__name')).values('pk', 'name', 'category__name', 'element',
                                                              'producer',
                                                              'total_amount', 'release_form', 'quantity', 'image')
+        Requests.objects.create(user=request.user.__str__(), search_type="Symptoms", response_code=200,
+                                date=datetime.datetime.now())
         start = int(request.GET.get('start', 0))
         remains = len(medicine)
         count = int(request.GET.get('count', remains))
@@ -360,10 +374,10 @@ class SetChain(generics.CreateAPIView):
         symptoms = []
         for i in request.data.get('chain'):
             if i['category'] > 0:
-                symptoms.append(Symptoms(symptoms=i['symptoms'], category_id=i['category']))
-
-            chain = ChainQueue.objects.get(pk=i['id'])
-            chain.delete()
+                symptoms.append(Symptoms(name=i['symptoms'], category_id=i['category']))
+            if i.get('id'):
+                chain = ChainQueue.objects.get(pk=i['id'])
+                chain.delete()
         Symptoms.objects.bulk_create(symptoms)
         return Response(status=200)
 

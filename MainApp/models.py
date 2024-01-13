@@ -64,7 +64,7 @@ class Views(models.Model):
 
 class Requests(models.Model):
     request_id = models.BigAutoField(primary_key=True)
-    date = models.DateTimeField(default=datetime.datetime.now())
+    date = models.DateTimeField()
     user = models.CharField(max_length=10000)
     search_type = models.CharField()
     response_code = models.IntegerField()
