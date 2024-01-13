@@ -47,7 +47,8 @@ def Scrap():
                     producer = producer.contents[2].strip()
                     break
                 producer = producer.find_next('span', class_='product-prop')
-
+            if not producer:
+                continue
             med = Medicines.objects.create(name=prod.find('h1', class_='product-title').text,
                                            category=category,
                                            producer=producer,
