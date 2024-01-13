@@ -49,7 +49,7 @@ def Scrap():
                 producer = producer.find_next('span', class_='product-prop')
             if not producer:
                 continue
-            med = Medicines.objects.create(name=prod.find('h1', class_='product-title').text,
+            med = Medicines.objects.get_or_create(name=prod.find('h1', class_='product-title').text,
                                            category=category,
                                            producer=producer,
                                            total_amount=int(amount),
