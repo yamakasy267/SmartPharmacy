@@ -17,8 +17,8 @@ import {scrap} from "./components/api/ProductAPI";
 export const Context = createContext(null)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-scrap()
-console.log("бегите")
+// scrap()
+// console.log("бегите")
 
 root.render(
   <Context.Provider value={{

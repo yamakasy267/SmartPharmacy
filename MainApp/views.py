@@ -336,7 +336,7 @@ class GetMedicineForSymptoms(generics.ListAPIView):
                                         response_text=e,
                                         date=datetime.datetime.now())
                 return Response(status=501, data={
-                    'error': 'Пока мы не знаем рецепта от вашей болезни, но в скоре наши врачи с этим справяться'})
+                    'error': 'Пока мы не знаем рецепта от вашей болезни, но в скоре наши врачи с этим справятся'})
             else:
                 print(e)
                 Requests.objects.create(user=request.user.__str__(), search_type="Symptoms", response_code=500,
