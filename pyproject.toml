@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.13"
-django = "^4.2.7"
+django = "^4.2.15"
 django-cors-headers = "^4.3.0"
 djangorestframework = "^3.14.0"
 djangorestframework-jwt = "^1.11.0"
